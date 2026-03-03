@@ -37,5 +37,5 @@ override.tf.json
 terraform.rc
 
 ## res file
-res 
+res
 res/*
