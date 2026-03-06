@@ -39,7 +39,7 @@ module "ec2_server" {
   instance_type = var.instance_type
 
   #ami_id            = var.ec2_ami_id
-  ami_id = "ami-09807aafaf7a91e8f"
+  ami_id            = "ami-09807aafaf7a91e8f"
   subnet_id         = module.main_vpc.public_subnet_ids[0]
   security_group_id = module.ec2_sg.ec2_sg_id
   key_pair_name     = var.ec2_key_pair_name

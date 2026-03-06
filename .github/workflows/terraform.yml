@@ -28,23 +28,27 @@ jobs:
         with:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
-      # 1. Format check first (it's the fastest fail)
+      # 1. Auto-format files
       - name: Terraform Format
+        run: terraform fmt -recursive
+
+      # 2. Verify formatting
+      - name: Verify Format
         run: terraform fmt -check
 
-      # 2. Initialize
+      # 3. Initialize
       - name: Terraform Init
         run: terraform init
 
-      # 3. Validate syntax
+      # 4. Validate syntax
       - name: Terraform Validate
         run: terraform validate
 
-      # 4. Generate execution plan
+      # 5. Generate execution plan
       - name: Terraform Plan
         run: terraform plan -input=false
 
-      # 5. Apply (Only on push to main)
+      # 6. Apply (Only on push to main)
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve -input=false
