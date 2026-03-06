@@ -39,3 +39,5 @@ terraform.rc
 ## res file
 res
 res/*
+/res
+/res/*
