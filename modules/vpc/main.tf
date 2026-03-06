@@ -14,7 +14,17 @@ resource "aws_subnet" "public_subnet" {
   cidr_block        = element(var.public_subnet_cidr, count.index)
   availability_zone = element(var.availability_zone, count.index)
 
-  map_public_ip_on_launch = true
+  # Checkov fix
+  # Disables automatic public IP assignment for instances launched into this subnet.
+  # Setting this to false enforces that public IP addresses are assigned explicitly
+  # and intentionally (via Elastic IP or instance-level configuration) rather than
+  # being attached by default to every instance. This reduces the attack surface of
+  # the VPC and ensures internet-facing exposure is a deliberate architectural decision.
+  # Even though this is a public subnet (routed via an Internet Gateway), instances
+  # should only receive public IPs when explicitly required.
+  # Reference: https://docs.aws.amazon.com/vpc/latest/userguide/vpc-ip-addressing.html
+  map_public_ip_on_launch = false
+  
   tags = {
     Name = "${var.vpc_name}-public-subnet-${count.index + 1}"
   }
