@@ -3,21 +3,21 @@ data "aws_ec2_managed_prefix_list" "cloudfront" {
 }
 
 resource "aws_security_group" "server_sg" {
-  name = var.sg_name
+  name        = var.sg_name
   description = "allow HTTP,HTTPS for alb sg and SSH for my ip"
-  vpc_id = var.vpc_id
+  vpc_id      = var.vpc_id
   tags = {
     Name = var.sg_name
   }
 }
 
 resource "aws_security_group_rule" "allow_ssh" {
-  type = "ingress"
-  description = "SSH ingress"
-  from_port = 22
-  to_port = 22
-  protocol = "tcp"
-  cidr_blocks = ["220.247.240.217/32"]
+  type              = "ingress"
+  description       = "SSH ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  cidr_blocks       = ["220.247.240.217/32"]
   security_group_id = aws_security_group.server_sg.id
 }
 

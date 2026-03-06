@@ -1,6 +1,6 @@
 resource "aws_vpc" "main_vpc" {
-  cidr_block = var.cidr_block
-  enable_dns_support = true
+  cidr_block           = var.cidr_block
+  enable_dns_support   = true
   enable_dns_hostnames = true
   tags = {
     Name = var.vpc_name
@@ -9,9 +9,9 @@ resource "aws_vpc" "main_vpc" {
 
 # Public subnet
 resource "aws_subnet" "public_subnet" {
-  vpc_id = aws_vpc.main_vpc.id
-  count = length(var.public_subnet_cidr)
-  cidr_block = element(var.public_subnet_cidr, count.index)
+  vpc_id            = aws_vpc.main_vpc.id
+  count             = length(var.public_subnet_cidr)
+  cidr_block        = element(var.public_subnet_cidr, count.index)
   availability_zone = element(var.availability_zone, count.index)
 
   map_public_ip_on_launch = true
@@ -22,9 +22,9 @@ resource "aws_subnet" "public_subnet" {
 
 # Private subnet
 resource "aws_subnet" "private_subnet" {
-  vpc_id = aws_vpc.main_vpc.id
-  count = length(var.private_subnet_cidr)
-  cidr_block = element(var.private_subnet_cidr, count.index)
+  vpc_id            = aws_vpc.main_vpc.id
+  count             = length(var.private_subnet_cidr)
+  cidr_block        = element(var.private_subnet_cidr, count.index)
   availability_zone = element(var.availability_zone, count.index)
 
   tags = {
@@ -49,14 +49,14 @@ resource "aws_route_table" "public_rt" {
 }
 
 resource "aws_route" "public_internet_route" {
-  route_table_id = aws_route_table.public_rt.id
+  route_table_id         = aws_route_table.public_rt.id
   destination_cidr_block = "0.0.0.0/0"
-  gateway_id = aws_internet_gateway.igw.id
+  gateway_id             = aws_internet_gateway.igw.id
 }
 
 resource "aws_route_table_association" "public_rt_association" {
-  count = length(var.public_subnet_cidr)
-  subnet_id = aws_subnet.public_subnet[count.index].id
+  count          = length(var.public_subnet_cidr)
+  subnet_id      = aws_subnet.public_subnet[count.index].id
   route_table_id = aws_route_table.public_rt.id
 }
 
@@ -70,8 +70,8 @@ resource "aws_route_table" "private_rt" {
 }
 
 resource "aws_route_table_association" "private_rt_association" {
-  count = length(var.private_subnet_cidr)
-  subnet_id = aws_subnet.private_subnet[count.index].id
+  count          = length(var.private_subnet_cidr)
+  subnet_id      = aws_subnet.private_subnet[count.index].id
   route_table_id = aws_route_table.private_rt.id
 }
 

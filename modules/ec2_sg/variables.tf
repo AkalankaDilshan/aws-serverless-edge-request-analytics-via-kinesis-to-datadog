@@ -1,9 +1,9 @@
 variable "sg_name" {
   description = "ec2 security group name"
-  type = string
+  type        = string
 }
 
 variable "vpc_id" {
   description = "main vpc id"
-  type = string
+  type        = string
 }
