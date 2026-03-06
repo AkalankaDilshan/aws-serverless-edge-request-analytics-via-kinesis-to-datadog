@@ -1,0 +1,33 @@
+name: Terraform Destroy
+
+on:
+    workflow_dispatch: # Manual trigger
+    # Uncomment below if you want to run on specific events
+    # push:
+    #   branches:
+    #     - main
+    # pull_request:
+
+jobs:
+    terraform-destroy:
+        runs-on: ubuntu-latest
+
+        # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+        defaults:
+            run:
+                shell: bash
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup Terraform
+              uses: hashicorp/setup-terraform@v2
+              with:
+                  cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+            - name: Initialize Terraform
+              run: terraform init
+
+            - name: Terraform Destroy
+              run: terraform destroy -auto-approve
