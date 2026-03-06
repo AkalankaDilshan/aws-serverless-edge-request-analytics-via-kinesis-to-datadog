@@ -1,6 +1,8 @@
 data "aws_ami" "specific_ami" {
+  owners = ["self", "amazon"]  
+  
   filter {
-    name   = "ami-id"
+    name   = "image-id"  # Use "image-id" instead of "ami-id"
     values = [var.ami_id]
   }
 }
