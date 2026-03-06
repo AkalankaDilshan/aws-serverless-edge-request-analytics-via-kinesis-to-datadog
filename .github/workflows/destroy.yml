@@ -8,6 +8,17 @@ on:
     #     - main
     # pull_request:
 
+    
+# Defines explicit minimum permissions for the GITHUB_TOKEN issued to this workflow.
+# Restricting permissions to the least required scopes limits the blast radius
+# in the event of a compromised action or dependency within the workflow.
+# All unspecified scopes default to "none" when this block is present.
+# Reference: https://docs.github.com/en/actions/security-guides/automatic-token-authentication
+permissions:
+  contents: read  # Required for actions/checkout to clone the repository
+  id-token:  write # Required for OIDC-based authentication to AWS (if using aws-actions/configure-aws-credentials)
+
+
 jobs:
     terraform-destroy:
         runs-on: ubuntu-latest
