@@ -24,7 +24,7 @@ resource "aws_subnet" "public_subnet" {
   # should only receive public IPs when explicitly required.
   # Reference: https://docs.aws.amazon.com/vpc/latest/userguide/vpc-ip-addressing.html
   map_public_ip_on_launch = false
-  
+
   tags = {
     Name = "${var.vpc_name}-public-subnet-${count.index + 1}"
   }
