@@ -13,9 +13,9 @@ resource "aws_instance" "server_instance" {
   subnet_id               = var.subnet_id
   vpc_security_group_ids  = [var.security_group_id]
   disable_api_termination = true  # protects the instance from accidental deletion
-  ebs_optimized           = false # Dedicated network connection between the EC2 & EBS,Lower latency,Consistent performance for I/O-intensive
+  ebs_optimized           = true # Dedicated network connection between the EC2 & EBS,Lower latency,Consistent performance for I/O-intensive
   monitoring              = true  # Enables detailed monitoring
-  
+
   ### Basic Syntax of Terraform Conditional ###
   #condition ? true_value : false_value
 
