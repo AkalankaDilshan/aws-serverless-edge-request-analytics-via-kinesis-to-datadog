@@ -1,6 +1,6 @@
 data "aws_ami" "specific_ami" {
   filter {
-    name   = "ec2-ami-id"
+    name   = "ami-id"
     values = [var.ami_id]
   }
 }
