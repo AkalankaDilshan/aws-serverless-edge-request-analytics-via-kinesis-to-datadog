@@ -55,6 +55,11 @@ module "ec2_server" {
   }
 }
 
+module "elastic_ip" {
+  source = "./modules/eip"
+  instance_id = module.ec2_server.instance_id
+}
+
 ## Lambda Iam role
 module "iam_lambdaedge" {
   source = "./modules/Iam/lambda@edge_iam"
