@@ -54,3 +54,9 @@ module "ec2_server" {
     ManagedBy   = "Terraform"
   }
 }
+
+## Lambda Iam role
+module "iam_lambdaedge" {
+  source = "./modules/Iam/lambda@edge_iam"
+  role_name = "lambdaedge-function-iam-role"
+}
