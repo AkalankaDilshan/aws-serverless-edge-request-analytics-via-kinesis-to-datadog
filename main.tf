@@ -81,6 +81,17 @@ module "iam_lambdaedge" {
 ## Lambda@Edge
 
 ## ACM
+# module "aws_acm_certificate" {
+#   source = "./modules/acm"
+#   domain_name = var.raw_domain_name
+#   hosted_zone_id = var.hosted_zone_id
+#   tags = {
+#     Environment = var.environment
+#     Name        = "acm-certificate"
+#     CreatedBy   = "AkalankaDilshan"
+#     ManagedBy   = "Terraform"
+#   }
+# }
 
 ## Cloudfront
 

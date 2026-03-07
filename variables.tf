@@ -29,6 +29,19 @@ variable "ec2_ami_id" {
   default     = "ami-09807aafaf7a91e8f"
 }
 
+## ACM variables
+variable "raw_domain_name" {
+  type = string
+  description = "actuall raw domain name for cerficate" # like zerocloud.click
+  default = "cloudretail.store"
+}
+
+variable "hosted_zone_id" {
+  type = string
+  description = "route 53 Hosted zone ID"
+  default = "Z06745293W4YDJCDPOLW2"
+}
+
 ## Tags variables
 variable "environment" {
   description = "project behavior"
