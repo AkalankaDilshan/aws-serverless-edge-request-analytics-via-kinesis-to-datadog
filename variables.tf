@@ -31,22 +31,22 @@ variable "ec2_ami_id" {
 
 ## ACM variables
 variable "raw_domain_name" {
-  type = string
+  type        = string
   description = "actuall raw domain name for cerficate" # like zerocloud.click
-  default = "cloudretail.store"
+  default     = "cloudretail.store"
 }
 
 variable "hosted_zone_id" {
-  type = string
+  type        = string
   description = "route 53 Hosted zone ID"
-  default = "Z06745293W4YDJCDPOLW2"
+  default     = "Z06745293W4YDJCDPOLW2"
 }
 
 ## Route53
 variable "domain_name" {
-  type = string
+  type        = string
   description = "actual domain name"
-  default = "myweb.cloudretail.store"
+  default     = "myweb.cloudretail.store"
 }
 
 ## Tags variables

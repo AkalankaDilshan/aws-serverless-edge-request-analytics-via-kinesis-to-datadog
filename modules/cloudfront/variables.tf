@@ -11,7 +11,7 @@ variable "instance_id" {
 
 variable "lambdaedge_function_arn" {
   description = "lamda@edge funcion arn" # aws_cloudfront_function.example.arn
-  type = string
+  type        = string
 }
 variable "origin_secret_header" {
   description = "Optional secret header for origin verification"

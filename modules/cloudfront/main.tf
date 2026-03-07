@@ -2,7 +2,7 @@ resource "aws_cloudfront_distribution" "cdn_distribution" {
 
   origin {
     domain_name = var.instance_dns_domain_name
-    origin_id = var.instance_id
+    origin_id   = var.instance_id
 
     custom_origin_config {
       http_port              = 80
@@ -32,7 +32,7 @@ resource "aws_cloudfront_distribution" "cdn_distribution" {
     lambda_function_association {
       event_type   = "viewer-request"
       lambda_arn   = var.lambdaedge_function_arn # must be versioned ARN
-      include_body = false                        # set true only if need POST body
+      include_body = false                       # set true only if need POST body
     }
 
     # forwarding and caching

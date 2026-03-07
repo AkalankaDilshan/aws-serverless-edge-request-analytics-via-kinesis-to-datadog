@@ -82,8 +82,8 @@ module "iam_lambdaedge" {
 
 ## ACM
 module "aws_acm_certificate" {
-  source = "./modules/acm"
-  domain_name = var.raw_domain_name
+  source         = "./modules/acm"
+  domain_name    = var.raw_domain_name
   hosted_zone_id = var.hosted_zone_id
   tags = {
     Environment = var.environment
@@ -95,16 +95,16 @@ module "aws_acm_certificate" {
 
 ## Cloudfront
 module "cloudfront" {
-  source = "./modules/cloudfront"
-  domain_name = "cloudretail.store"
+  source                   = "./modules/cloudfront"
+  domain_name              = "cloudretail.store"
   instance_dns_domain_name = module.ec2_server.instance_public_dns
-  instance_id = module.ec2_server.instance_id
-  lambdaedge_function_arn = "lambda". ## change this one
-  acm_certificate_arn = module.aws_acm_certificate.acm_certificate_arn
-  depends_on = [ module.ec2_server,module.aws_acm_certificate ]
+  instance_id              = module.ec2_server.instance_id
+  lambdaedge_function_arn  = "lambda" ## change this one
+  acm_certificate_arn      = module.aws_acm_certificate.acm_certificate_arn
+  depends_on               = [module.ec2_server, module.aws_acm_certificate]
   tags = {
     Environment = var.environment
-    Name        = "acm-certificate"
+    Name        = "aws-cloudfront"
     CreatedBy   = "AkalankaDilshan"
     ManagedBy   = "Terraform"
   }
@@ -112,9 +112,15 @@ module "cloudfront" {
 
 ## Route53
 module "route53" {
-  source = "./modules/route_53"
-  domain_name = var.domain_name
-  hosted_zone_id = var.hosted_zone_id
-  cloudfront_distribution_name = module.cloudfront.cdn_domain_name
+  source                            = "./modules/route_53"
+  domain_name                       = var.domain_name
+  hosted_zone_id                    = var.hosted_zone_id
+  cloudfront_distribution_name      = module.cloudfront.cdn_domain_name
   cloudfront_distribution_hosted_id = module.cloudfront.cloudfront_distribution_hosted_zone_id
+  tags = {
+    Environment = var.environment
+    Name        = "myweb.cloudretail.store"
+    CreatedBy   = "AkalankaDilshan"
+    ManagedBy   = "Terraform"
+  }
 }
