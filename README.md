@@ -2,4 +2,4 @@
 Capture rich request metadata (geo, device, referrer) at the edge and stream it asynchronously to Kinesis or S3 for real-time dashboards — without slowing down the response.
 Key concepts: Viewer response triggers, async logging, Kinesis Firehose integration
 
-<img width="788" height="539" alt="Screenshot 2026-03-07 at 21 01 40" src="https://github.com/user-attachments/assets/85a5c9fa-161d-4f68-b2e0-658bc7765b65" />
+<img width="902" height="578" alt="Screenshot 2026-03-08 at 02 12 14" src="https://github.com/user-attachments/assets/301b0f8a-abb3-4253-a5d9-eb2642911dab" />
