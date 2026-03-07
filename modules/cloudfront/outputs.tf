@@ -11,9 +11,3 @@ output "cloudfront_distribution_id" {
   value       = aws_cloudfront_distribution.cdn_distribution.id
   description = "the ID of the cloudFront distribution"
 }
-
-variable "tags" {
-  description = "Tags to apply to resources"
-  type        = map(string)
-  default     = {}
-}
