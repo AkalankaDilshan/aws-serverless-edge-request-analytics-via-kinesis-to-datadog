@@ -38,10 +38,11 @@ module "ec2_server" {
   instance_name = "production-server"
   instance_type = var.instance_type
 
-  ami_id            = var.ec2_ami_id
-  subnet_id         = module.main_vpc.public_subnet_ids[0]
-  security_group_id = module.ec2_sg.ec2_sg_id
-  key_pair_name     = var.ec2_key_pair_name
+  ami_id             = var.ec2_ami_id
+  subnet_id          = module.main_vpc.public_subnet_ids[0]
+  security_group_id  = module.ec2_sg.ec2_sg_id
+  is_allow_public_ip = false
+  key_pair_name      = var.ec2_key_pair_name
 
   ebs_volume_size = "30"
   ebs_volume_type = "gp3"

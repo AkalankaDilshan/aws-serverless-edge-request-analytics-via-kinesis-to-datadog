@@ -50,3 +50,9 @@ variable "iam_instance_profile_name" {
   type        = string
   default     = null
 }
+
+variable "is_allow_public_ip" {
+  description = "is it allow public ip or not"
+  type        = bool
+  default     = true
+}

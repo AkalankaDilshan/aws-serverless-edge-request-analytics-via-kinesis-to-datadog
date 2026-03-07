@@ -8,13 +8,14 @@ data "aws_ami" "specific_ami" {
 }
 
 resource "aws_instance" "server_instance" {
-  ami                     = data.aws_ami.specific_ami.id
-  instance_type           = var.instance_type
-  subnet_id               = var.subnet_id
-  vpc_security_group_ids  = [var.security_group_id]
-  disable_api_termination = false # protects the instance from accidental deletion, false for dev, true for prod
-  ebs_optimized           = true # Dedicated network connection between the EC2 & EBS,Lower latency,Consistent performance for I/O-intensive
-  monitoring              = true # Enables detailed monitoring
+  ami                         = data.aws_ami.specific_ami.id
+  instance_type               = var.instance_type
+  subnet_id                   = var.subnet_id
+  vpc_security_group_ids      = [var.security_group_id]
+  associate_public_ip_address = var.is_allow_public_ip
+  disable_api_termination     = false # protects the instance from accidental deletion, false for dev, true for prod
+  ebs_optimized               = true  # Dedicated network connection between the EC2 & EBS,Lower latency,Consistent performance for I/O-intensive
+  monitoring                  = true  # Enables detailed monitoring
 
   ### Basic Syntax of Terraform Conditional ###
   #condition ? true_value : false_value
