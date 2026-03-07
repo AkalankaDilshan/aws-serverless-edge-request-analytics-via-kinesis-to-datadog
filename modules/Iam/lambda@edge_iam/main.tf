@@ -1,14 +1,14 @@
 data "aws_caller_identity" "current" {}
 
 data "aws_iam_policy_document" "assume_role_policy" {
-    statement {
-      effect = "Allow"
-      actions = ["sts:AssumeRole"]
-      principals {
-        type = "Service"
-        identifiers = ["lambda.amazonaws.com", "edgelambda.amazonaws.com"]
-      }
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com", "edgelambda.amazonaws.com"]
     }
+  }
 }
 
 data "aws_iam_policy_document" "lambda_kinesis_policy_document" {
@@ -20,7 +20,7 @@ data "aws_iam_policy_document" "lambda_kinesis_policy_document" {
 }
 
 resource "aws_iam_role" "lambda_role" {
-  name = var.role_name
+  name               = var.role_name
   assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
 }
 

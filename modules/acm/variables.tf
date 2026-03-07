@@ -8,8 +8,8 @@ variable "hosted_zone_id" {
   description = "Route 53 hosted zone id for the domain"
 }
 
-variable "is_allow_public_ip" {
-  description = "is it allow public ip or not"
-  type        = bool
-  default     = true
+variable "tags" {
+  description = "Tags to apply to resources"
+  type        = map(string)
+  default     = {}
 }

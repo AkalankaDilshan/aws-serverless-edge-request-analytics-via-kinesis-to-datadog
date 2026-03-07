@@ -56,13 +56,19 @@ module "ec2_server" {
 }
 
 module "elastic_ip" {
-  source = "./modules/eip"
+  source      = "./modules/eip"
   instance_id = module.ec2_server.instance_id
+  tags = {
+    Environment = var.environment
+    Name        = "production-server-ip"
+    CreatedBy   = "AkalankaDilshan"
+    ManagedBy   = "Terraform"
+  }
 }
 
 ## Lambda Iam role
 module "iam_lambdaedge" {
-  source = "./modules/Iam/lambda@edge_iam"
+  source    = "./modules/Iam/lambda@edge_iam"
   role_name = "lambdaedge-function-iam-role"
   tags = {
     Environment = var.environment
