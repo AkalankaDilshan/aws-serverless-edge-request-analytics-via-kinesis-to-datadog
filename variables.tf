@@ -42,6 +42,13 @@ variable "hosted_zone_id" {
   default = "Z06745293W4YDJCDPOLW2"
 }
 
+## Route53
+variable "domain_name" {
+  type = string
+  description = "actual domain name"
+  default = "myweb.cloudretail.store"
+}
+
 ## Tags variables
 variable "environment" {
   description = "project behavior"
