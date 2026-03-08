@@ -27,3 +27,14 @@ variable "function_name" {
   type = string
   description = "name of the Lambda function" # like cloudfront-edge-metadata
 }
+
+variable "function_iam_role" {
+  type = string
+  description = "Lambda function iam role" # like cloudfront-edge-metadata
+}
+
+variable "tags" {
+  description = "Tags to apply to resources"
+  type        = map(string)
+  default     = {}
+}
