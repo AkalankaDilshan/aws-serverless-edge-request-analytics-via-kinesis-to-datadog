@@ -140,6 +140,7 @@ module "cloudfront" {
   instance_dns_domain_name = module.ec2_server.instance_public_dns
   instance_id              = module.ec2_server.instance_id
   lambdaedge_function_arn  = module.lambdaedge_function.lambda_qualified_arn
+  logs_bucket_domain_name  = module.cdn_logs_bucket.cdn_logs_bucket_domain_name 
   acm_certificate_arn      = module.aws_acm_certificate.acm_certificate_arn
   depends_on               = [module.ec2_server, module.aws_acm_certificate, module.iam_lambdaedge, module.cdn_logs_bucket]
   tags = {

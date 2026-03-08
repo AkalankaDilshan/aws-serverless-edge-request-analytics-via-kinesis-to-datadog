@@ -54,6 +54,13 @@ resource "aws_cloudfront_distribution" "cdn_distribution" {
   # Price class (select based on audience)
   price_class = "PriceClass_100" # Use only North America and Europe edges | PriceClass_All | PriceClass_200
 
+  # cdn logs
+  logging_config {
+    bucket          = var.logs_bucket_domain_name
+    prefix          = "cloudfront/"   # Optional: organizes logs into a subfolder
+    include_cookies = false           # Set true to log cookie details (useful for debugging)
+  }
+
   # goe restrictions
   restrictions {
     geo_restriction {
