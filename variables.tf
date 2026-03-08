@@ -46,7 +46,7 @@ variable "hosted_zone_id" {
 variable "domain_name" {
   type        = string
   description = "actual domain name"
-  default     = "myweb.cloudretail.store"
+  default     = "test.cloudretail.store"
 }
 
 ## Tags variables

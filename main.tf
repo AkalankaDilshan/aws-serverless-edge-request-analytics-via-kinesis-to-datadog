@@ -111,7 +111,7 @@ module "lambdaedge_function" {
 ## ACM
 module "aws_acm_certificate" {
   source         = "./modules/acm"
-  domain_name    = "myweb.cloudretail.store"
+  domain_name    = "test.cloudretail.store"
   hosted_zone_id = var.hosted_zone_id
   tags = {
     Environment = var.environment
@@ -124,7 +124,7 @@ module "aws_acm_certificate" {
 ## Cloudfront
 module "cloudfront" {
   source                   = "./modules/cloudfront"
-  domain_name              = "myweb.cloudretail.store"
+  domain_name              = "test.cloudretail.store"
   instance_dns_domain_name = module.ec2_server.instance_public_dns
   instance_id              = module.ec2_server.instance_id
   lambdaedge_function_arn  = module.lambdaedge_function.lambda_qualified_arn
@@ -148,7 +148,7 @@ module "route53" {
   depends_on                        = [module.cloudfront]
   tags = {
     Environment = var.environment
-    Name        = "myweb.cloudretail.store"
+    Name        = "test.cloudretail.store"
     CreatedBy   = "AkalankaDilshan"
     ManagedBy   = "Terraform"
   }
