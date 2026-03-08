@@ -21,27 +21,26 @@ resource "aws_security_group_rule" "allow_ssh" {
   security_group_id = aws_security_group.server_sg.id
 }
 
-## Temporary disable port 80 and 443 rules
 
-# resource "aws_security_group_rule" "allow_http" {
-#   type = "ingress"
-#   description = "Allow HTTP traffic from cloudfront"
-#   from_port = 80
-#   to_port = 80
-#   protocol = "tcp"
-#   prefix_list_ids = [data.aws_ec2_managed_prefix_list.cloudfront.id]
-#   security_group_id = aws_security_group.server_sg.id
-# }
+resource "aws_security_group_rule" "allow_http" {
+  type = "ingress"
+  description = "Allow HTTP traffic from cloudfront"
+  from_port = 80
+  to_port = 80
+  protocol = "tcp"
+  prefix_list_ids = [data.aws_ec2_managed_prefix_list.cloudfront.id]
+  security_group_id = aws_security_group.server_sg.id
+}
 
-# resource "aws_security_group_rule" "allow_https" {
-#   type = "ingress"
-#   description = "Allow HTTPS traffic from cloudfront"
-#   from_port = 443
-#   to_port = 443
-#   protocol = "tcp"
-#   prefix_list_ids = [ data.aws_ec2_managed_prefix_list.cloudfront.id ]
-#   security_group_id = aws_security_group.server_sg.id
-# }
+resource "aws_security_group_rule" "allow_https" {
+  type = "ingress"
+  description = "Allow HTTPS traffic from cloudfront"
+  from_port = 443
+  to_port = 443
+  protocol = "tcp"
+  prefix_list_ids = [ data.aws_ec2_managed_prefix_list.cloudfront.id ]
+  security_group_id = aws_security_group.server_sg.id
+}
 
 # outbound rules
 resource "aws_security_group_rule" "allow_all_outbound" {
