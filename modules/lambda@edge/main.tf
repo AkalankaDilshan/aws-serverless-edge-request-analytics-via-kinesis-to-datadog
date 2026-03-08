@@ -50,8 +50,6 @@ resource "aws_lambda_function" "edge_metadata" {
   })
 
   depends_on = [
-    data.archive_file.lambda_zip,
-    aws_iam_role_policy.kinesis_publish,
-    aws_iam_role_policy.cloudwatch_logs,
+    data.archive_file.lambda_zip
   ]
 }
