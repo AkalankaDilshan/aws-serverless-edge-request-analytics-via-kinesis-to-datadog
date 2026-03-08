@@ -16,7 +16,7 @@ variable "lambdaedge_function_arn" {
 
 variable "logs_bucket_domain_name" {
   description = "cdn log bucket domain name"
-  type = string
+  type        = string
 }
 
 variable "origin_secret_header" {

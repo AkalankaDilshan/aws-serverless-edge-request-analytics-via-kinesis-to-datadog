@@ -1,7 +1,7 @@
 resource "random_string" "bucket_suffix" {
-  length = 6
+  length  = 6
   special = false
-  upper = false
+  upper   = false
 }
 
 resource "aws_s3_bucket" "cdn_logs" {
@@ -18,5 +18,5 @@ resource "aws_s3_bucket_ownership_controls" "cdn_logs_control" {
 resource "aws_s3_bucket_acl" "cdn_logs_acl" {
   depends_on = [aws_s3_bucket_ownership_controls.cdn_logs]
   bucket     = aws_s3_bucket.cdn_logs.id
-  acl        = "log-delivery-write"  # Grants CloudFront permission to write logs
+  acl        = "log-delivery-write" # Grants CloudFront permission to write logs
 }

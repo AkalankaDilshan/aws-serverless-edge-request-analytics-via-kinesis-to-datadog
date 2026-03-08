@@ -1,5 +1,5 @@
 variable "domain_name" {
-  type = string
+  type        = string
   description = "main domian name"
 }
 

@@ -57,8 +57,8 @@ resource "aws_cloudfront_distribution" "cdn_distribution" {
   # cdn logs
   logging_config {
     bucket          = var.logs_bucket_domain_name
-    prefix          = "cloudfront/"   # Optional: organizes logs into a subfolder
-    include_cookies = false           # Set true to log cookie details (useful for debugging)
+    prefix          = "cloudfront/" # Optional: organizes logs into a subfolder
+    include_cookies = false         # Set true to log cookie details (useful for debugging)
   }
 
   # goe restrictions

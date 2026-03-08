@@ -17,28 +17,28 @@ resource "aws_security_group_rule" "allow_ssh" {
   from_port         = 22
   to_port           = 22
   protocol          = "tcp"
-  cidr_blocks       = ["220.247.240.217/32","175.157.44.106/32"]
+  cidr_blocks       = ["220.247.240.217/32", "175.157.44.106/32"]
   security_group_id = aws_security_group.server_sg.id
 }
 
 
 resource "aws_security_group_rule" "allow_http" {
-  type = "ingress"
+  type        = "ingress"
   description = "Allow HTTP traffic from cloudfront"
-  from_port = 80
-  to_port = 80
-  protocol = "tcp"
+  from_port   = 80
+  to_port     = 80
+  protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
   #prefix_list_ids = [data.aws_ec2_managed_prefix_list.cloudfront.id]
   security_group_id = aws_security_group.server_sg.id
 }
 
 resource "aws_security_group_rule" "allow_https" {
-  type = "ingress"
+  type        = "ingress"
   description = "Allow HTTPS traffic from cloudfront"
-  from_port = 443
-  to_port = 443
-  protocol = "tcp"
+  from_port   = 443
+  to_port     = 443
+  protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
   #prefix_list_ids = [ data.aws_ec2_managed_prefix_list.cloudfront.id ]
   security_group_id = aws_security_group.server_sg.id
