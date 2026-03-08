@@ -79,6 +79,21 @@ module "iam_lambdaedge" {
 }
 
 ## Lambda@Edge
+module "lambdaedge_function" {
+  source = "./modules/lambda@edge"
+  function_name = "cloudfront-edge-metadata"
+  function_iam_role = module.iam_lambdaedge.lambda_role_arn
+  kinesis_stream_name = "d"
+  kinesis_stream_arn = "f"
+  kinesis_region = var.region
+  depends_on = [ module.iam_lambdaedge ]
+  tags = {
+    Environment = var.environment
+    Name        = "cloudfront-edge-metadata-collector-function"
+    CreatedBy   = "AkalankaDilshan"
+    ManagedBy   = "Terraform"
+  }
+}
 
 ## ACM
 module "aws_acm_certificate" {
@@ -99,9 +114,9 @@ module "cloudfront" {
   domain_name              = "cloudretail.store"
   instance_dns_domain_name = module.ec2_server.instance_public_dns
   instance_id              = module.ec2_server.instance_id
-  lambdaedge_function_arn  = "lambda" ## change this one
+  lambdaedge_function_arn  = module.lambdaedge_function.lambda_qualified_arn
   acm_certificate_arn      = module.aws_acm_certificate.acm_certificate_arn
-  depends_on               = [module.ec2_server, module.aws_acm_certificate]
+  depends_on               = [module.ec2_server, module.aws_acm_certificate,module.iam_lambdaedge]
   tags = {
     Environment = var.environment
     Name        = "aws-cloudfront"
@@ -117,6 +132,7 @@ module "route53" {
   hosted_zone_id                    = var.hosted_zone_id
   cloudfront_distribution_name      = module.cloudfront.cdn_domain_name
   cloudfront_distribution_hosted_id = module.cloudfront.cloudfront_distribution_hosted_zone_id
+  depends_on = [ module.cloudfront ]
   tags = {
     Environment = var.environment
     Name        = "myweb.cloudretail.store"
