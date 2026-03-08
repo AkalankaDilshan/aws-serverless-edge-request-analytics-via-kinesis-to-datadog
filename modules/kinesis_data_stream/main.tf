@@ -1,5 +1,5 @@
 resource "aws_kinesis_stream" "this" {
-  name = var.stream_name
+  name             = var.stream_name
   retention_period = var.retention_period_hours
 
   stream_mode_details {
@@ -11,7 +11,7 @@ resource "aws_kinesis_stream" "this" {
   kms_key_id      = "alias/aws/kinesis"
 
   tags = merge(var.tags, {
-    Module = "kinesis_stream"
+    Module  = "kinesis_stream"
     Purpose = "edge-analytics-ingest"
   })
 }

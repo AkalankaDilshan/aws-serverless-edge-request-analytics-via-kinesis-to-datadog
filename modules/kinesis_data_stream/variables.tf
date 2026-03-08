@@ -1,10 +1,10 @@
 variable "stream_name" {
-  type = string
+  type        = string
   description = "kinesis data stream name" # "cloudfront-edge-events"
 }
 
 variable "retention_period_hours" {
-  type = number
+  type        = number
   description = "records are kept in the stream before expiring"
 }
 

@@ -68,8 +68,8 @@ module "elastic_ip" {
 
 # Kinesis Data Stream
 module "kinesis_stream" {
-  source = "./modules/kinesis_data_stream"
-  stream_name = "cloudfront-edge-events"
+  source                 = "./modules/kinesis_data_stream"
+  stream_name            = "cloudfront-edge-events"
   retention_period_hours = 1
   tags = {
     Environment = var.environment
@@ -93,13 +93,13 @@ module "iam_lambdaedge" {
 
 ## Lambda@Edge
 module "lambdaedge_function" {
-  source = "./modules/lambda@edge"
-  function_name = "cloudfront-edge-metadata"
-  function_iam_role = module.iam_lambdaedge.lambda_role_arn
+  source              = "./modules/lambda@edge"
+  function_name       = "cloudfront-edge-metadata"
+  function_iam_role   = module.iam_lambdaedge.lambda_role_arn
   kinesis_stream_name = module.kinesis_stream.stream_name
-  kinesis_stream_arn = module.kinesis_stream.stream_arn
-  kinesis_region = var.region
-  depends_on = [ module.iam_lambdaedge, module.kinesis_stream ]
+  kinesis_stream_arn  = module.kinesis_stream.stream_arn
+  kinesis_region      = var.region
+  depends_on          = [module.iam_lambdaedge, module.kinesis_stream]
   tags = {
     Environment = var.environment
     Name        = "cloudfront-edge-metadata-collector-function"
@@ -129,7 +129,7 @@ module "cloudfront" {
   instance_id              = module.ec2_server.instance_id
   lambdaedge_function_arn  = module.lambdaedge_function.lambda_qualified_arn
   acm_certificate_arn      = module.aws_acm_certificate.acm_certificate_arn
-  depends_on               = [module.ec2_server, module.aws_acm_certificate,module.iam_lambdaedge]
+  depends_on               = [module.ec2_server, module.aws_acm_certificate, module.iam_lambdaedge]
   tags = {
     Environment = var.environment
     Name        = "aws-cloudfront"
@@ -145,7 +145,7 @@ module "route53" {
   hosted_zone_id                    = var.hosted_zone_id
   cloudfront_distribution_name      = module.cloudfront.cdn_domain_name
   cloudfront_distribution_hosted_id = module.cloudfront.cloudfront_distribution_hosted_zone_id
-  depends_on = [ module.cloudfront ]
+  depends_on                        = [module.cloudfront]
   tags = {
     Environment = var.environment
     Name        = "myweb.cloudretail.store"
