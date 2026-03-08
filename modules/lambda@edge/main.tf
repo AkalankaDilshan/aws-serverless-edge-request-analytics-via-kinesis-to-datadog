@@ -33,6 +33,7 @@ resource "aws_lambda_function" "edge_metadata" {
   function_name = var.function_name
   role          = var.function_iam_role
   runtime       = "nodejs18.x"
+  handler       = "index.handler"
 
   # REQUIRED: publish=true creates a numbered version; CloudFront rejects $LATEST
   publish = true
