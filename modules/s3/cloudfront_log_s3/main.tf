@@ -16,7 +16,7 @@ resource "aws_s3_bucket_ownership_controls" "cdn_logs_control" {
 }
 
 resource "aws_s3_bucket_acl" "cdn_logs_acl" {
-  depends_on = [aws_s3_bucket_ownership_controls.cdn_logs]
+  depends_on = [aws_s3_bucket_ownership_controls.cdn_logs_control]
   bucket     = aws_s3_bucket.cdn_logs.id
   acl        = "log-delivery-write" # Grants CloudFront permission to write logs
 }
