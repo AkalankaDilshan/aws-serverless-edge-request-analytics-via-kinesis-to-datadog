@@ -66,7 +66,20 @@ module "elastic_ip" {
   }
 }
 
-## Lambda Iam role
+# Kinesis Data Stream
+module "kinesis_stream" {
+  source = "./modules/kinesis_data_stream"
+  stream_name = "cloudfront-edge-events"
+  retention_period_hours = 1
+  tags = {
+    Environment = var.environment
+    Name        = "cloudfront-edge-event-stream"
+    CreatedBy   = "AkalankaDilshan"
+    ManagedBy   = "Terraform"
+  }
+}
+
+# Lambda Iam role
 module "iam_lambdaedge" {
   source    = "./modules/Iam/lambda@edge_iam"
   role_name = "lambdaedge-function-iam-role"
@@ -83,10 +96,10 @@ module "lambdaedge_function" {
   source = "./modules/lambda@edge"
   function_name = "cloudfront-edge-metadata"
   function_iam_role = module.iam_lambdaedge.lambda_role_arn
-  kinesis_stream_name = "d"
-  kinesis_stream_arn = "f"
+  kinesis_stream_name = module.kinesis_stream.stream_name
+  kinesis_stream_arn = module.kinesis_stream.stream_arn
   kinesis_region = var.region
-  depends_on = [ module.iam_lambdaedge ]
+  depends_on = [ module.iam_lambdaedge, module.kinesis_stream ]
   tags = {
     Environment = var.environment
     Name        = "cloudfront-edge-metadata-collector-function"
