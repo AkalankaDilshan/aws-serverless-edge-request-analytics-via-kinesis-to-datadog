@@ -111,7 +111,7 @@ module "lambdaedge_function" {
 ## ACM
 module "aws_acm_certificate" {
   source         = "./modules/acm"
-  domain_name    = "test.cloudretail.store"
+  domain_name    = var.domain_name
   hosted_zone_id = var.hosted_zone_id
   tags = {
     Environment = var.environment
@@ -121,15 +121,27 @@ module "aws_acm_certificate" {
   }
 }
 
+## Cloudfront log s3 bucket
+module "cdn_logs_bucket" {
+  source = "./modules/s3/cloudfront_log_s3"
+  domain_name = var.domain_name
+  tags = {
+    Environment = var.environment
+    Name        = "cdn-log-bucket"
+    CreatedBy   = "AkalankaDilshan"
+    ManagedBy   = "Terraform"
+  }
+}
+
 ## Cloudfront
 module "cloudfront" {
   source                   = "./modules/cloudfront"
-  domain_name              = "test.cloudretail.store"
+  domain_name              = var.domain_name
   instance_dns_domain_name = module.ec2_server.instance_public_dns
   instance_id              = module.ec2_server.instance_id
   lambdaedge_function_arn  = module.lambdaedge_function.lambda_qualified_arn
   acm_certificate_arn      = module.aws_acm_certificate.acm_certificate_arn
-  depends_on               = [module.ec2_server, module.aws_acm_certificate, module.iam_lambdaedge]
+  depends_on               = [module.ec2_server, module.aws_acm_certificate, module.iam_lambdaedge, module.cdn_logs_bucket]
   tags = {
     Environment = var.environment
     Name        = "aws-cloudfront"
