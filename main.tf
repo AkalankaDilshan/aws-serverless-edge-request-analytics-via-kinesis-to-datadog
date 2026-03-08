@@ -111,7 +111,7 @@ module "lambdaedge_function" {
 ## ACM
 module "aws_acm_certificate" {
   source         = "./modules/acm"
-  domain_name    = var.raw_domain_name
+  domain_name    = "myweb.cloudretail.store"
   hosted_zone_id = var.hosted_zone_id
   tags = {
     Environment = var.environment
