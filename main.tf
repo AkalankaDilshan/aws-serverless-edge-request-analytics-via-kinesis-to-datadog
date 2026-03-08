@@ -41,7 +41,7 @@ module "ec2_server" {
   ami_id             = var.ec2_ami_id
   subnet_id          = module.main_vpc.public_subnet_ids[0]
   security_group_id  = module.ec2_sg.ec2_sg_id
-  is_allow_public_ip = false
+  is_allow_public_ip = true
   key_pair_name      = var.ec2_key_pair_name
 
   ebs_volume_size = "30"
@@ -55,16 +55,16 @@ module "ec2_server" {
   }
 }
 
-module "elastic_ip" {
-  source      = "./modules/eip"
-  instance_id = module.ec2_server.instance_id
-  tags = {
-    Environment = var.environment
-    Name        = "production-server-ip"
-    CreatedBy   = "AkalankaDilshan"
-    ManagedBy   = "Terraform"
-  }
-}
+# module "elastic_ip" {
+#   source      = "./modules/eip"
+#   instance_id = module.ec2_server.instance_id
+#   tags = {
+#     Environment = var.environment
+#     Name        = "production-server-ip"
+#     CreatedBy   = "AkalankaDilshan"
+#     ManagedBy   = "Terraform"
+#   }
+# }
 
 # Kinesis Data Stream
 module "kinesis_stream" {
