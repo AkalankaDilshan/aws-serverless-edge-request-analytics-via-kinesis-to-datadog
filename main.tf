@@ -70,7 +70,7 @@ module "elastic_ip" {
 module "kinesis_stream" {
   source                 = "./modules/kinesis_data_stream"
   stream_name            = "cloudfront-edge-events"
-  retention_period_hours = 1
+  retention_period_hours = 24
   tags = {
     Environment = var.environment
     Name        = "cloudfront-edge-event-stream"
