@@ -133,6 +133,18 @@ module "cdn_logs_bucket" {
   }
 }
 
+## Data-Lake S3 bucket
+module "datalake_bucket" {
+  source = "./modules/s3/data_lake_s3"
+  bucket_name_prefix = "edge-analytics-logs"
+  tags = {
+    Environment = var.environment
+    Name        = "edge-analytics-logs-datalake-bucket"
+    CreatedBy   = "AkalankaDilshan"
+    ManagedBy   = "Terraform"
+  }
+}
+
 ## Cloudfront
 module "cloudfront" {
   source                   = "./modules/cloudfront"
