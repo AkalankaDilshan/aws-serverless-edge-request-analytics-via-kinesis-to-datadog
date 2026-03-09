@@ -2,7 +2,7 @@ data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 resource "aws_s3_bucket" "log_lake" {
-  bucket = "${var.bucket_name_prefix}-${data.aws_caller_identity.current.account_id}"
+  bucket        = "${var.bucket_name_prefix}-${data.aws_caller_identity.current.account_id}"
   force_destroy = var.force_destroy_bucket
 
   tags = merge(var.tags, {
@@ -13,7 +13,7 @@ resource "aws_s3_bucket" "log_lake" {
 
 # block all public access
 resource "aws_s3_bucket_public_access_block" "log_lake" {
-  bucket = aws_s3_bucket.log_lake.id
+  bucket                  = aws_s3_bucket.log_lake.id
   block_public_acls       = true
   block_public_policy     = true
   ignore_public_acls      = true
