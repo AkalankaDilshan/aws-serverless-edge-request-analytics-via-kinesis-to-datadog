@@ -47,6 +47,8 @@ jobs:
       # 5. Generate execution plan
       - name: Terraform Plan
         run: terraform plan -input=false
+        env:
+          TF_VAR_datadog_api_key: ${{ secrets.DATADOG_API_KEY }}
 
       # 6. Apply (Only on push to main)
       - name: Terraform Apply
