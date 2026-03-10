@@ -11,12 +11,12 @@ variable "kinesis_stream_arn" {
 
 variable "firehose_iam_role_arn" {
   description = "iam role arn"
-  type = string
+  type        = string
 }
 
 variable "s3_backup_arn" {
   description = "data lake bucket arn"
-  type = string
+  type        = string
 }
 
 #https://aws-kinesis-http-intake.logs.datadoghq.com/v1/input
@@ -28,13 +28,13 @@ variable "s3_backup_arn" {
 #https://aws-kinesis-http-intake.logs.ddog-gov.com/v1/input
 variable "datadog_url" {
   description = "correct region dd url"
-  type = string
+  type        = string
 }
 
 variable "datadog_api_key" {
   description = "Datadog API key used to authenticate the Firehose HTTP endpoint."
-  type      = string
-  sensitive = true
+  type        = string
+  sensitive   = true
 
   validation {
     condition     = length(var.datadog_api_key) > 0

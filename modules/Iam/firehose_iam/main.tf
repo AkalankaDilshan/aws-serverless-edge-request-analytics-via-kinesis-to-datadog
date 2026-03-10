@@ -8,19 +8,19 @@ resource "aws_iam_role" "firehose" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
-        {
-            Sid = "FirehoseAssumeRole"
-            Effect = "Allow"
-            Principal = {
-                Service = "firehose.amazonaws.com"
-            }
-            Action = "sts.AssumeRole"
-            Condition = {
+      {
+        Sid    = "FirehoseAssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "firehose.amazonaws.com"
+        }
+        Action = "sts.AssumeRole"
+        Condition = {
           StringEquals = {
             "sts:ExternalId" = data.aws_caller_identity.current.account_id
           }
         }
-        }
+      }
     ]
   })
 }
@@ -33,17 +33,17 @@ resource "aws_iam_role_policy" "firehose_kinesis_read" {
   policy = {
     Version = "2012-10-17"
     Statement = [
-        {
-            Sid = "KinesisRead"
-            Effect = "Allow"
-            Action = [
-                "kinesis:GetRecords",
-                "kinesis:GetShardIterator",
-                "kinesis:DescribeStream",
-                "kinesis:ListShards",
-            ]
-            Resource = var.kinesis_stream_arn
-        }
+      {
+        Sid    = "KinesisRead"
+        Effect = "Allow"
+        Action = [
+          "kinesis:GetRecords",
+          "kinesis:GetShardIterator",
+          "kinesis:DescribeStream",
+          "kinesis:ListShards",
+        ]
+        Resource = var.kinesis_stream_arn
+      }
     ]
   }
 }

@@ -1,6 +1,6 @@
 output "firehose_arn" {
   description = "firehose arn"
-  value = aws_kinesis_firehose_delivery_stream.this.arn
+  value       = aws_kinesis_firehose_delivery_stream.this.arn
 }
 
 output "firehose_name" {

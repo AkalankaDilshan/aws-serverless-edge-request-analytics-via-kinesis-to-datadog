@@ -182,11 +182,11 @@ module "route53" {
 
 ## Iam role for firehose
 module "iam_firehose" {
-  source = "./modules/Iam/firehose_iam"
-  delivery_stream_name = "cloudfront-edge-firehose" # for create names
-  kinesis_stream_arn = module.kinesis_stream.stream_arn
+  source                  = "./modules/Iam/firehose_iam"
+  delivery_stream_name    = "cloudfront-edge-firehose" # for create names
+  kinesis_stream_arn      = module.kinesis_stream.stream_arn
   data_lake_s3_bucket_arn = module.datalake_bucket.s3_bucket_arn
-  depends_on = [ module.datalake_bucket,module.kinesis_stream ]
+  depends_on              = [module.datalake_bucket, module.kinesis_stream]
   tags = {
     Environment = var.environment
     Name        = "firehose-iam-role"
@@ -197,14 +197,14 @@ module "iam_firehose" {
 
 ## Kinesis firehole
 module "kinesis_firehose" {
-  source = "./modules/kinesis_firehose"
-  kinesis_stream_arn = module.kinesis_stream.stream_arn
-  delivery_stream_name = "cloudfront-edge-events" # for firehose name
-  datadog_url = var.datadog_url
-  datadog_api_key = var.datadog_api_key
+  source                = "./modules/kinesis_firehose"
+  kinesis_stream_arn    = module.kinesis_stream.stream_arn
+  delivery_stream_name  = "cloudfront-edge-events" # for firehose name
+  datadog_url           = var.datadog_url
+  datadog_api_key       = var.datadog_api_key
   firehose_iam_role_arn = module.iam_firehose.firehose_role_arn
-  s3_backup_arn = module.datalake_bucket.s3_bucket_arn
-  depends_on = [ module.kinesis_stream,module.datalake_bucket,module.iam_firehose ]
+  s3_backup_arn         = module.datalake_bucket.s3_bucket_arn
+  depends_on            = [module.kinesis_stream, module.datalake_bucket, module.iam_firehose]
   tags = {
     Environment = var.environment
     Name        = "firehose-iam-role"
