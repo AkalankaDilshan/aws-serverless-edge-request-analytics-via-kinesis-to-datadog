@@ -27,10 +27,10 @@ resource "aws_iam_role" "firehose" {
 
 # read from kinesis data stream
 resource "aws_iam_role_policy" "firehose_kinesis_read" {
-  name = "${var.delivery_stream_name}-kinesis-read"
-  role = aws_iam_role.firehose.id
-
-  policy = {
+  name   = "${var.delivery_stream_name}-kinesis-read"
+  role   = aws_iam_role.firehose_role.id
+  
+  policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
@@ -42,10 +42,10 @@ resource "aws_iam_role_policy" "firehose_kinesis_read" {
           "kinesis:DescribeStream",
           "kinesis:ListShards",
         ]
-        Resource = ["${var.kinesis_stream_arn}",]
+        Resource = var.kinesis_stream_arn
       }
     ]
-  }
+  })
 }
 
 resource "aws_iam_role_policy" "firehose_s3_write" {
