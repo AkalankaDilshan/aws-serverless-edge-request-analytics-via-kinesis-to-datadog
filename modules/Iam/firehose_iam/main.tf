@@ -42,7 +42,7 @@ resource "aws_iam_role_policy" "firehose_kinesis_read" {
           "kinesis:DescribeStream",
           "kinesis:ListShards",
         ]
-        Resource = "${var.kinesis_stream_arn}"
+        Resource = ["${var.kinesis_stream_arn}",]
       }
     ]
   }
