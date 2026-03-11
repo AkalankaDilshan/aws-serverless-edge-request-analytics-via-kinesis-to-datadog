@@ -83,6 +83,8 @@ module "kinesis_stream" {
 module "iam_lambdaedge" {
   source    = "./modules/Iam/lambda@edge_iam"
   role_name = "lambdaedge-function-iam-role"
+  kinesis_region = var.region
+  kinesis_stream_name = module.kinesis_stream.stream_name
   tags = {
     Environment = var.environment
     Name        = "lambda-iam-role"
