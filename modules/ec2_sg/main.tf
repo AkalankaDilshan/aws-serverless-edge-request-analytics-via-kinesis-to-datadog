@@ -11,6 +11,7 @@ resource "aws_security_group" "server_sg" {
   }
 }
 
+
 resource "aws_security_group_rule" "allow_ssh" {
   type              = "ingress"
   description       = "SSH ingress"
@@ -21,28 +22,28 @@ resource "aws_security_group_rule" "allow_ssh" {
   security_group_id = aws_security_group.server_sg.id
 }
 
+## move this http and https rule to cloudfront module
+# resource "aws_security_group_rule" "allow_http" {
+#   type        = "ingress"
+#   description = "Allow HTTP traffic from cloudfront"
+#   from_port   = 80
+#   to_port     = 80
+#   protocol    = "tcp"
+#   cidr_blocks = ["0.0.0.0/0"]
+#   #prefix_list_ids = [data.aws_ec2_managed_prefix_list.cloudfront.id]
+#   security_group_id = aws_security_group.server_sg.id
+# }
 
-resource "aws_security_group_rule" "allow_http" {
-  type        = "ingress"
-  description = "Allow HTTP traffic from cloudfront"
-  from_port   = 80
-  to_port     = 80
-  protocol    = "tcp"
-  cidr_blocks = ["0.0.0.0/0"]
-  #prefix_list_ids = [data.aws_ec2_managed_prefix_list.cloudfront.id]
-  security_group_id = aws_security_group.server_sg.id
-}
-
-resource "aws_security_group_rule" "allow_https" {
-  type        = "ingress"
-  description = "Allow HTTPS traffic from cloudfront"
-  from_port   = 443
-  to_port     = 443
-  protocol    = "tcp"
-  cidr_blocks = ["0.0.0.0/0"]
-  #prefix_list_ids = [ data.aws_ec2_managed_prefix_list.cloudfront.id ]
-  security_group_id = aws_security_group.server_sg.id
-}
+# resource "aws_security_group_rule" "allow_https" {
+#   type        = "ingress"
+#   description = "Allow HTTPS traffic from cloudfront"
+#   from_port   = 443
+#   to_port     = 443
+#   protocol    = "tcp"
+#   cidr_blocks = ["0.0.0.0/0"]
+#   #prefix_list_ids = [ data.aws_ec2_managed_prefix_list.cloudfront.id ]
+#   security_group_id = aws_security_group.server_sg.id
+# }
 
 # outbound rules
 resource "aws_security_group_rule" "allow_all_outbound" {

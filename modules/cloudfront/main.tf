@@ -1,3 +1,7 @@
+data "aws_ec2_managed_prefix_list" "cloudfront" {
+  name = "com.amazonaws.global.cloudfront.origin-facing"
+}
+
 resource "aws_cloudfront_distribution" "cdn_distribution" {
 
   origin {
@@ -73,4 +77,28 @@ resource "aws_cloudfront_distribution" "cdn_distribution" {
     ssl_support_method       = "sni-only"
     minimum_protocol_version = "TLSv1.2_2021"
   }
+}
+
+resource "aws_security_group_rule" "allow_http" {
+  type        = "ingress"
+  description = "Allow HTTP traffic from cloudfront"
+  from_port   = 80
+  to_port     = 80
+  protocol    = "tcp"
+  #cidr_blocks = ["0.0.0.0/0"]
+  prefix_list_ids = [data.aws_ec2_managed_prefix_list.cloudfront.id]
+  security_group_id = var.instance_sg_id
+  depends_on = [ aws_cloudfront_distribution.cdn_distribution ]
+}
+
+resource "aws_security_group_rule" "allow_https" {
+  type        = "ingress"
+  description = "Allow HTTPS traffic from cloudfront"
+  from_port   = 443
+  to_port     = 443
+  protocol    = "tcp"
+  #cidr_blocks = ["0.0.0.0/0"]
+  prefix_list_ids = [ data.aws_ec2_managed_prefix_list.cloudfront.id ]
+  security_group_id = var.instance_sg_id
+  depends_on = [ aws_cloudfront_distribution.cdn_distribution ]
 }

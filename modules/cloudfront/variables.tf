@@ -43,6 +43,12 @@ variable "acm_certificate_arn" {
   description = "acm value"
 }
 
+# ec2 sg
+variable "instance_sg_id" {
+  description = "server security group id"
+  type = string
+}
+
 variable "tags" {
   description = "Tags to apply to resources"
   type        = map(string)
