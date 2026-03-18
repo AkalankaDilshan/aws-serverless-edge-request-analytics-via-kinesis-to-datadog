@@ -205,7 +205,7 @@ module "iam_firehose" {
 module "kinesis_firehose" {
   source                = "./modules/kinesis_firehose"
   kinesis_stream_arn    = module.kinesis_stream.stream_arn
-  delivery_stream_name  = "cloudfront-edge-events" # for firehose name
+  delivery_stream_name  = "cloudfront-edge-firehose" # for firehose name
   datadog_url           = var.datadog_url
   datadog_api_key       = var.datadog_api_key
   firehose_iam_role_arn = module.iam_firehose.firehose_role_arn
