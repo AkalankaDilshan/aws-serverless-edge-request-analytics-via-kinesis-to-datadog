@@ -1,44 +1,44 @@
 name: Terraform Destroy
 
 on:
-    workflow_dispatch: # Manual trigger
-    # Uncomment below if you want to run on specific events
-    # push:
-    #   branches:
-    #     - main
-    # pull_request:
+  workflow_dispatch: # Manual trigger
+  # Uncomment below if you want to run on specific events
+  # push:
+  #   branches:
+  #     - main
+  # pull_request:
 
-    
 # Defines explicit minimum permissions for the GITHUB_TOKEN issued to this workflow.
 # Restricting permissions to the least required scopes limits the blast radius
 # in the event of a compromised action or dependency within the workflow.
 # All unspecified scopes default to "none" when this block is present.
 # Reference: https://docs.github.com/en/actions/security-guides/automatic-token-authentication
 permissions:
-  contents: read  # Required for actions/checkout to clone the repository
-  id-token:  write # Required for OIDC-based authentication to AWS (if using aws-actions/configure-aws-credentials)
-
+  contents: read # Required for actions/checkout to clone the repository
+  id-token: write # Required for OIDC-based authentication to AWS (if using aws-actions/configure-aws-credentials)
 
 jobs:
-    terraform-destroy:
-        runs-on: ubuntu-latest
+  terraform-destroy:
+    runs-on: ubuntu-latest
 
-        # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
-        defaults:
-            run:
-                shell: bash
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
 
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v4
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-            - name: Setup Terraform
-              uses: hashicorp/setup-terraform@v2
-              with:
-                  cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
-            - name: Initialize Terraform
-              run: terraform init
+      - name: Initialize Terraform
+        run: terraform init
 
-            - name: Terraform Destroy
-              run: terraform destroy -auto-approve
+      - name: Terraform Destroy
+        run: terraform destroy -auto-approve
+        env:
+          TF_VAR_datadog_api_key: ${{ secrets.DATADOG_API_KEY }}
