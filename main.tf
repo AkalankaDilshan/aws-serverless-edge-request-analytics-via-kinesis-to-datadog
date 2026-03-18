@@ -1,6 +1,5 @@
 provider "aws" {
   region = var.region
-  alias  = "us_east_1"
 }
 
 module "main_vpc" {
@@ -83,7 +82,6 @@ module "kinesis_stream" {
 # Lambda Iam role
 module "iam_lambdaedge" {
   source    = "./modules/Iam/lambda@edge_iam"
-  providers = { aws = aws.us_east_1 }
   role_name = "lambdaedge-function-iam-role"
   kinesis_region = var.region
   kinesis_stream_name = module.kinesis_stream.stream_name
@@ -98,7 +96,6 @@ module "iam_lambdaedge" {
 ## Lambda@Edge
 module "lambdaedge_function" {
   source              = "./modules/lambda@edge"
-  providers = { aws = aws.us_east_1 }
   function_name       = "cloudfront-edge-metadata"
   function_iam_role   = module.iam_lambdaedge.lambda_role_arn
   kinesis_stream_name = module.kinesis_stream.stream_name
