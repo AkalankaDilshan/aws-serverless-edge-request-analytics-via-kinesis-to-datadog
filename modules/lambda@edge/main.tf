@@ -1,49 +1,55 @@
-# Lambda@Edge has no environment variable support, so we want to pass values via templatefile()
 locals {
-  rendered_function = templatefile("${path.module}/function/index.js.tpl", {
-    kinesis_stream_name = var.kinesis_stream_name
-    kinesis_region      = var.kinesis_region
-  })
-
-  function_version_label = var.function_name
+  function_dir = "{path.module}/function"
+  rendered_source = "${local.function_dir}/index.js"
+  zip_output_path = "${path.module}/builds/lambda_edge.zip"
 }
 
-# write the rendered JS so archive_file can zip it
+# Render index.js.tpl -> index.js 
 resource "local_file" "lambda_source" {
-  content         = local.rendered_function
-  filename        = "${path.module}/function/index.js"
-  file_permission = "0644"
+  content = templatefile("${local.function_dir}/index.js.tpl", {
+    kinesis_stream_name = var.kinesis_stream_name
+    kinesis_region = var.kinesis_region
+  })
+  filename = local.rendered_source
 }
 
-# zip the rendered JS, archive_file can zip it
+# run npm install inside the function directory adter index.js rendered
+resource "null_resource" "npm_install" {
+  triggers = {
+    package_json = filemd5("${local.function_dir}/package.json")
+    source_hash = local_file.lambda_source.content_md5
+  }
+
+  provisioner "local-exec" {
+    command     = "npm install --prefix ${local.function_dir} --omit=dev --no-fund --no-audit"
+    working_dir = path.module
+  }
+
+  depends_on = [local_file.lambda_source]  
+}
+
 data "archive_file" "lambda_zip" {
-  type        = "zip"
-  source_file = local_file.lambda_source.filename
-  output_path = "${path.module}/function/lambda_edge_${var.function_name}.zip"
-  depends_on  = [local_file.lambda_source]
+    type = "zip"
+    source_dir = local.function_dir
+    output_path = local.zip_output_path
+    excludes    = ["*.tpl"]
+
+    depends_on = [ null_resource.npm_install ]
 }
 
-data "aws_caller_identity" "current" {}
-
-# Lambda function
 resource "aws_lambda_function" "edge_metadata" {
-  filename         = data.archive_file.lambda_zip.output_path
-  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
-
   function_name = var.function_name
-  role          = var.function_iam_role
-  runtime       = "nodejs18.x"
-  handler       = "index.handler"
-
-  # REQUIRED: publish=true creates a numbered version; CloudFront rejects $LATEST
+  role = var.function_iam_role
+  runtime = "nodejs20.x"
+  handler = "index.handler"
+  filename = data.archive_file.lambda_zip.output_path
+  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   publish = true
 
-  # hard limits for viewr-request event type
-  memory_size = 128 # max 128 MB for viewer-request 
-  timeout     = 5   # max 5 s  for viewer-request
+  timeout = 5
+  memory_size = 128
 
   description = "CloudFront edge metadata collector → Kinesis stream: ${var.kinesis_stream_name}"
-
   tags = merge(var.tags, {
     LambdaEdge    = "true"
     EventType     = "viewer-request"
