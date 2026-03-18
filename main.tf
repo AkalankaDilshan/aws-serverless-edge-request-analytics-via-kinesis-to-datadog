@@ -45,7 +45,7 @@ module "ec2_server" {
   is_allow_public_ip = true
   key_pair_name      = var.ec2_key_pair_name
 
-  ebs_volume_size = "30"
+  ebs_volume_size = 30
   ebs_volume_type = "gp3"
 
   tags = {
