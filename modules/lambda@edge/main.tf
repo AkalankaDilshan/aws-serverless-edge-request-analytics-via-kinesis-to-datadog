@@ -33,7 +33,6 @@ data "archive_file" "lambda_zip" {
   output_path = local.zip_output_path
   excludes    = ["*.tpl"]
 
-  depends_on = [null_resource.npm_install]
 }
 
 resource "aws_lambda_function" "edge_metadata" {
