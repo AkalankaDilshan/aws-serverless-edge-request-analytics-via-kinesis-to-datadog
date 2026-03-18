@@ -54,8 +54,4 @@ resource "aws_lambda_function" "edge_metadata" {
     EventType     = "viewer-request"
     KinesisStream = var.kinesis_stream_name
   })
-
-  depends_on = [
-    data.archive_file.lambda_zip
-  ]
 }
