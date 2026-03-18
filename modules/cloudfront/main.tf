@@ -2,41 +2,8 @@ data "aws_ec2_managed_prefix_list" "cloudfront" {
   name = "com.amazonaws.global.cloudfront.origin-facing"
 }
 
-## necessary header pass to origin
-resource "aws_cloudfront_origin_request_policy" "geo_device" {
-  name    = "enable-cf-geo-and-device-headers"
-  comment = "Passes CloudFront geo/device headers and all viewer headers to origin"
-
-  headers_config {
-    header_behavior = "whitelist"
-    headers {
-      items = [
-        "CloudFront-Viewer-Country",
-        "CloudFront-Viewer-Country-Name",
-        "CloudFront-Viewer-Country-Region",
-        "CloudFront-Viewer-Country-Region-Name",
-        "CloudFront-Viewer-City",
-        "CloudFront-Viewer-Latitude",
-        "CloudFront-Viewer-Longitude",
-        "CloudFront-Viewer-Time-Zone",
-        "CloudFront-Viewer-Postal-Code",
-        "CloudFront-Viewer-Metro-Code",
-        "CloudFront-Is-Desktop-Viewer",
-        "CloudFront-Is-Mobile-Viewer",
-        "CloudFront-Is-Tablet-Viewer",
-        "CloudFront-Is-SmartTV-Viewer",
-        "CloudFront-Forwarded-Proto",
-      ]
-    }
-  }
-
-  query_strings_config {
-    query_string_behavior = "all"
-  }
-
-  cookies_config {
-    cookie_behavior = "all"
-  }
+data "aws_cloudfront_origin_request_policy" "all_viewer_and_cf_headers" {
+  name = "Managed-AllViewerAndCloudFrontHeaders-2022-06"
 }
 
 # disable all other headers its AWs managed policy
@@ -76,11 +43,9 @@ resource "aws_cloudfront_distribution" "cdn_distribution" {
     viewer_protocol_policy = "redirect-to-https"
     compress               = true
 
-    # Use managed CachingDisabled — required when forwarding all headers/cookies
-    # Cannot mix cache_policy_id with forwarded_values block
     cache_policy_id          = local.caching_disabled_policy_id
-    origin_request_policy_id = aws_cloudfront_origin_request_policy.geo_device.id
-
+    origin_request_policy_id = data.aws_cloudfront_origin_request_policy.all_viewer_and_cf_headers.id
+    
     # Lambda@Edge: viewer-request 
     lambda_function_association {
       event_type   = "viewer-request"
