@@ -1,12 +1,11 @@
 locals {
-  function_dir    = "{path.module}/function"
-  rendered_source = "${local.function_dir}/index.js"
+  rendered_source = "${path.module}/function/index.js"
   zip_output_path = "${path.module}/builds/lambda_edge.zip"
 }
 
 # Render index.js.tpl -> index.js 
 resource "local_file" "lambda_source" {
-  content = templatefile("${local.function_dir}/index.js.tpl", {
+  content = templatefile("${path.module}/function/index.js.tpl", {
     kinesis_stream_name = var.kinesis_stream_name
     kinesis_region      = var.kinesis_region
   })
@@ -16,12 +15,12 @@ resource "local_file" "lambda_source" {
 # run npm install inside the function directory adter index.js rendered
 resource "null_resource" "npm_install" {
   triggers = {
-    package_json = filemd5("${local.function_dir}/package.json")
+    package_json = filemd5("${path.module}/function/package.json")
     source_hash  = local_file.lambda_source.content_md5
   }
 
   provisioner "local-exec" {
-    command     = "npm install --prefix ${local.function_dir} --omit=dev --no-fund --no-audit"
+    command     = "npm install --prefix ${path.module}/function --omit=dev --no-fund --no-audit"
     working_dir = path.module
   }
 
@@ -30,7 +29,7 @@ resource "null_resource" "npm_install" {
 
 data "archive_file" "lambda_zip" {
   type        = "zip"
-  source_dir  = local.function_dir
+  source_dir  = "${path.module}/function"
   output_path = local.zip_output_path
   excludes    = ["*.tpl"]
 
