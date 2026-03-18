@@ -5,12 +5,12 @@ variable "role_name" {
 
 variable "kinesis_region" {
   description = "region of kinesis"
-  type = string
+  type        = string
 }
 
 variable "kinesis_stream_name" {
   description = "stream name"
-  type = string
+  type        = string
 }
 
 variable "tags" {

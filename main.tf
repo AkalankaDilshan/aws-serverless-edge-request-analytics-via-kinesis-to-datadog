@@ -81,9 +81,9 @@ module "kinesis_stream" {
 
 # Lambda Iam role
 module "iam_lambdaedge" {
-  source    = "./modules/Iam/lambda@edge_iam"
-  role_name = "lambdaedge-function-iam-role"
-  kinesis_region = var.region
+  source              = "./modules/Iam/lambda@edge_iam"
+  role_name           = "lambdaedge-function-iam-role"
+  kinesis_region      = var.region
   kinesis_stream_name = module.kinesis_stream.stream_name
   tags = {
     Environment = var.environment
@@ -153,7 +153,7 @@ module "cloudfront" {
   domain_name              = var.domain_name
   instance_dns_domain_name = module.ec2_server.instance_public_dns
   instance_id              = module.ec2_server.instance_id
-  instance_sg_id = module.ec2_sg.ec2_sg_id
+  instance_sg_id           = module.ec2_sg.ec2_sg_id
   lambdaedge_function_arn  = module.lambdaedge_function.lambda_qualified_arn
   logs_bucket_domain_name  = module.cdn_logs_bucket.cdn_logs_bucket_domain_name
   acm_certificate_arn      = module.aws_acm_certificate.acm_certificate_arn

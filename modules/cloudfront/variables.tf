@@ -46,7 +46,7 @@ variable "acm_certificate_arn" {
 # ec2 sg
 variable "instance_sg_id" {
   description = "server security group id"
-  type = string
+  type        = string
 }
 
 variable "tags" {

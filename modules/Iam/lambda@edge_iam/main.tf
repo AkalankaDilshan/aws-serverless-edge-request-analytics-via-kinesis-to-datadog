@@ -13,8 +13,8 @@ data "aws_iam_policy_document" "assume_role_policy" {
 
 data "aws_iam_policy_document" "lambda_kinesis_policy_document" {
   statement {
-    effect    = "Allow"
-    actions   = ["kinesis:PutRecord", "kinesis:PutRecords", ]
+    effect  = "Allow"
+    actions = ["kinesis:PutRecord", "kinesis:PutRecords", ]
     #resources = ["arn:aws:kinesis:*:${data.aws_caller_identity.current.account_id}:stream/*"]
     resources = ["arn:aws:kinesis:${var.kinesis_region}:${data.aws_caller_identity.current.account_id}:stream/${var.kinesis_stream_name}"]
   }
