@@ -1,0 +1,9 @@
+{
+  "name": "cloudfront-edge-metadata",
+  "version": "1.0.0",
+  "description": "Lambda@Edge viewer-request metadata collector",
+  "main": "index.js",
+  "dependencies": {
+    "@aws-sdk/client-kinesis": "^3.600.0"
+  }
+}
