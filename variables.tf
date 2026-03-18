@@ -68,6 +68,7 @@ variable "datadog_api_key" {
   description = "Datadog API key used to authenticate the Firehose HTTP endpoint."
   type        = string
   sensitive   = true
+  default     = "dsfxcdvdfv" ## for destroy
 }
 
 ## Tags variables
