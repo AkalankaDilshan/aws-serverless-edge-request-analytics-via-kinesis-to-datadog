@@ -2,6 +2,50 @@ data "aws_ec2_managed_prefix_list" "cloudfront" {
   name = "com.amazonaws.global.cloudfront.origin-facing"
 }
 
+## necessary header pass to origin
+resource "aws_cloudfront_origin_request_policy" "geo_device" {
+  name = "enable-cf-geo-and-device-headers"
+  comment = "Passes CloudFront geo/device headers and all viewer headers to origin"
+
+  headers_config {
+    header_behavior = "whitelist"
+    headers {
+      items = [ 
+        "CloudFront-Viewer-Country",
+        "CloudFront-Viewer-Country-Name",
+        "CloudFront-Viewer-Country-Region",
+        "CloudFront-Viewer-Country-Region-Name",
+        "CloudFront-Viewer-City",
+        "CloudFront-Viewer-Latitude",
+        "CloudFront-Viewer-Longitude",
+        "CloudFront-Viewer-Time-Zone",
+        "CloudFront-Viewer-Postal-Code",
+        "CloudFront-Viewer-Metro-Code",
+        "CloudFront-Is-Desktop-Viewer",
+        "CloudFront-Is-Mobile-Viewer",
+        "CloudFront-Is-Tablet-Viewer",
+        "CloudFront-Is-SmartTV-Viewer",
+        "CloudFront-Forwarded-Proto",
+       ]
+    }
+  }
+
+  query_strings_config {
+    query_string_behavior = "all"
+  }
+
+  cookies_config {
+    cookie_behavior = "all"
+  }
+}
+
+# disable all other headers its AWs managed policy
+locals {
+# AWS managed policy: CachingDisabled
+  caching_disabled_policy_id = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad"
+}
+
+
 resource "aws_cloudfront_distribution" "cdn_distribution" {
 
   origin {
@@ -32,26 +76,16 @@ resource "aws_cloudfront_distribution" "cdn_distribution" {
     viewer_protocol_policy = "redirect-to-https"
     compress               = true
 
+    # Use managed CachingDisabled — required when forwarding all headers/cookies
+    # Cannot mix cache_policy_id with forwarded_values block
+    cache_policy_id          = local.caching_disabled_policy_id
+    origin_request_policy_id = aws_cloudfront_origin_request_policy.geo_device.id
+    
     # Lambda@Edge: viewer-request 
     lambda_function_association {
       event_type   = "viewer-request"
       lambda_arn   = var.lambdaedge_function_arn # must be versioned ARN
       include_body = false                       # set true only if need POST body
-    }
-
-    # forwarding and caching
-    min_ttl     = 0
-    default_ttl = 3600
-    max_ttl     = 86400
-
-    # Forward all headers/cookies for ALB to process properly
-    forwarded_values {
-      query_string = true
-      headers      = ["*"] # Forward all headers for ec2 to process(disable cloudfront caching)
-
-      cookies {
-        forward = "all" # Forward all cookies to ALB
-      }
     }
   }
 
@@ -77,6 +111,8 @@ resource "aws_cloudfront_distribution" "cdn_distribution" {
     ssl_support_method       = "sni-only"
     minimum_protocol_version = "TLSv1.2_2021"
   }
+
+  tags = var.tags
 }
 
 resource "aws_security_group_rule" "allow_http" {
@@ -85,8 +121,8 @@ resource "aws_security_group_rule" "allow_http" {
   from_port   = 80
   to_port     = 80
   protocol    = "tcp"
-  #cidr_blocks = ["0.0.0.0/0"]
-  prefix_list_ids = [data.aws_ec2_managed_prefix_list.cloudfront.id]
+  cidr_blocks = ["0.0.0.0/0"]
+  #prefix_list_ids = [data.aws_ec2_managed_prefix_list.cloudfront.id]
   security_group_id = var.instance_sg_id
   depends_on = [ aws_cloudfront_distribution.cdn_distribution ]
 }
@@ -97,8 +133,8 @@ resource "aws_security_group_rule" "allow_https" {
   from_port   = 443
   to_port     = 443
   protocol    = "tcp"
-  #cidr_blocks = ["0.0.0.0/0"]
-  prefix_list_ids = [ data.aws_ec2_managed_prefix_list.cloudfront.id ]
+  cidr_blocks = ["0.0.0.0/0"]
+  #prefix_list_ids = [ data.aws_ec2_managed_prefix_list.cloudfront.id ]
   security_group_id = var.instance_sg_id
   depends_on = [ aws_cloudfront_distribution.cdn_distribution ]
 }
