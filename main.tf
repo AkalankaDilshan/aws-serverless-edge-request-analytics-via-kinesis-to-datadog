@@ -6,10 +6,10 @@ module "main_vpc" {
   source = "./modules/vpc"
 
   vpc_name            = "production-vpc"
-  cidr_block          = "193.168.0.0/16"
+  cidr_block          = "10.0.0.0/16"
   availability_zone   = var.availability_zones
-  public_subnet_cidr  = ["193.168.1.0/24"]
-  private_subnet_cidr = ["193.168.3.0/24"]
+  public_subnet_cidr  = ["10.0.1.0/24"]
+  private_subnet_cidr = ["10.0.3.0/24"]
   tags = {
     Environment = var.environment
     Name        = "production-vpc"
