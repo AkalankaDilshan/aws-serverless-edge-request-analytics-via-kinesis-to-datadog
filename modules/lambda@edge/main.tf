@@ -13,19 +13,19 @@ resource "local_file" "lambda_source" {
 }
 
 # run npm install inside the function directory adter index.js rendered
-resource "null_resource" "npm_install" {
-  triggers = {
-    package_json = filemd5("${path.module}/function/package.json")
-    source_hash  = local_file.lambda_source.content_md5
-  }
+# resource "null_resource" "npm_install" {
+#   triggers = {
+#     package_json = filemd5("${path.module}/function/package.json")
+#     source_hash  = local_file.lambda_source.content_md5
+#   }
 
-  provisioner "local-exec" {
-    command     = "npm install --prefix ${path.module}/function --omit=dev --no-fund --no-audit"
-    working_dir = path.module
-  }
+#   provisioner "local-exec" {
+#     command     = "npm install --prefix ${path.module}/function --omit=dev --no-fund --no-audit"
+#     working_dir = path.module
+#   }
 
-  depends_on = [local_file.lambda_source]
-}
+#   depends_on = [local_file.lambda_source]
+# }
 
 data "archive_file" "lambda_zip" {
   type        = "zip"
