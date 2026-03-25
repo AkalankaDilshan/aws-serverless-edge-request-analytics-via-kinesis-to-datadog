@@ -73,73 +73,53 @@ function parseAcceptLanguage(raw) {
     .filter(Boolean);
 }
 
-// Convert to callback style instead of async
-exports.handler = (event, context, callback) => {
-  try {
-    const cfRecord  = event.Records[0].cf;
-    const { request, config } = cfRecord;
-    const { headers, uri, method, querystring, clientIp } = request;
+exports.handler = async (event) => {
+  const cfRecord  = event.Records[0].cf;
+  const { request, config } = cfRecord;
+  const { headers, uri, method, querystring, clientIp } = request;
 
-    const userAgent = getHeader(headers, "user-agent");
-    const referrer  = getHeader(headers, "referer") || getHeader(headers, "referrer");
+  const userAgent = getHeader(headers, "user-agent");
+  const referrer  = getHeader(headers, "referer") || getHeader(headers, "referrer");
 
-    const record = {
-      timestamp:       new Date().toISOString(),
-      requestId:       config.requestId,
-      distributionId:  config.distributionId,
-      eventType:       config.eventType,
-      method,
-      uri,
-      querystring:     querystring || null,
-      host:            getHeader(headers, "host"),
-      protocol:        getHeader(headers, "cloudfront-forwarded-proto"),
-      clientIp,
-      userAgent,
-      referrer,
-      acceptLanguages: parseAcceptLanguage(getHeader(headers, "accept-language")),
-      acceptEncoding:  getHeader(headers, "accept-encoding"),
-      geo:             extractGeo(headers),
-      device:          detectDevice(userAgent),
-      cacheControl:    getHeader(headers, "cache-control"),
-      pragma:          getHeader(headers, "pragma"),
-    };
+  const record = {
+    timestamp:       new Date().toISOString(),
+    requestId:       config.requestId,
+    distributionId:  config.distributionId,
+    eventType:       config.eventType,
+    method,
+    uri,
+    querystring:     querystring || null,
+    host:            getHeader(headers, "host"),
+    protocol:        getHeader(headers, "cloudfront-forwarded-proto"),
+    clientIp,
+    userAgent,
+    referrer,
+    acceptLanguages: parseAcceptLanguage(getHeader(headers, "accept-language")),
+    acceptEncoding:  getHeader(headers, "accept-encoding"),
+    geo:             extractGeo(headers),
+    device:          detectDevice(userAgent),
+    cacheControl:    getHeader(headers, "cache-control"),
+    pragma:          getHeader(headers, "pragma"),
+  };
 
-    // Fire and forget - don't await the Kinesis operation
-    // This ensures the Lambda returns quickly without waiting for Kinesis
-    const kinesisPromise = kinesisClient.send(
+  await Promise.race([
+    kinesisClient.send(
       new PutRecordCommand({
         StreamName:   STREAM_NAME,
         PartitionKey: clientIp || uri,
         Data:         Buffer.from(JSON.stringify(record)),
       })
-    ).catch((err) => {
-      // Log error but don't block the response
-      console.error(JSON.stringify({
-        level:   "ERROR",
-        message: "Kinesis publish failed",
-        error:   err.message,
-        stream:  STREAM_NAME,
-        uri,
-      }));
-    });
+    ),
+    new Promise((resolve) => setTimeout(resolve, 800)),
+  ]).catch((err) => {
+    console.error(JSON.stringify({
+      level:   "ERROR",
+      message: "Kinesis publish failed",
+      error:   err.message,
+      stream:  STREAM_NAME,
+      uri,
+    }));
+  });
 
-    // Set a timeout to prevent hanging if Kinesis is slow
-    // But we don't await it - we just let it run in background
-    setTimeout(() => {
-      // This is just a safety timeout - the Lambda might already have returned
-      // but Node.js will keep the event loop alive until all promises resolve
-      // unless we set context.callbackWaitsForEmptyEventLoop = false
-    }, 100);
-
-    // IMPORTANT: Tell Lambda not to wait for the Kinesis promise
-    context.callbackWaitsForEmptyEventLoop = false;
-    
-    // Immediately return the request to CloudFront
-    callback(null, request);
-    
-  } catch (error) {
-    // If anything fails, still return the request to avoid 503
-    console.error('Lambda@Edge error:', error);
-    callback(null, event.Records[0].cf.request);
-  }
+  return request;
 };
