@@ -1,0 +1,45 @@
+{
+  "Records": [
+    {
+      "cf": {
+        "config": {
+          "requestId": "test-request-id-12345",
+          "distributionId": "E12345EXAMPLE",
+          "eventType": "viewer-request"
+        },
+        "request": {
+          "method": "GET",
+          "uri": "/index.html",
+          "querystring": "",
+          "clientIp": "203.0.113.45",
+          "headers": {
+            "host": [
+              {
+                "key": "Host",
+                "value": "example.com"
+              }
+            ],
+            "user-agent": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1"
+              }
+            ],
+            "cloudfront-viewer-country": [
+              {
+                "key": "CloudFront-Viewer-Country",
+                "value": "US"
+              }
+            ],
+            "referer": [
+              {
+                "key": "Referer",
+                "value": "https://google.com"
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}
