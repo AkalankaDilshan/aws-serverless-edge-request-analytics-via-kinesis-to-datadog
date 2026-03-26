@@ -48,9 +48,9 @@ resource "aws_cloudfront_distribution" "cdn_distribution" {
     
     # Lambda@Edge: viewer-request 
     lambda_function_association {
-      event_type   = "viewer-request"
-      lambda_arn   = var.lambdaedge_function_arn # must be versioned ARN
-      include_body = false                       # set true only if need POST body
+      event_type   = "viewer-response"
+      lambda_arn   = var.lambdaedge_function_arn
+      include_body = false                       
     }
   }
 
