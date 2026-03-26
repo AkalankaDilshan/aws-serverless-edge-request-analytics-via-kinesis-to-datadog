@@ -7,7 +7,7 @@ const STREAM_REGION = "${kinesis_region}";
 
 const kinesisClient = new KinesisClient({ region: STREAM_REGION });
 
-// Simple helper to get header values
+// Helper to safely get header value
 function getHeader(headers, name) {
   const entry = headers[name.toLowerCase()];
   return entry && entry.length > 0 ? entry[0].value : null;
@@ -15,54 +15,57 @@ function getHeader(headers, name) {
 
 exports.handler = (event, context, callback) => {
   try {
-    const cfRecord = event.Records[0].cf;
-    const { request, config } = cfRecord;
-    const { headers, uri, clientIp } = request;
+    const cf = event.Records[0].cf;
+    const { request, response, config } = cf;   // ← changed for Viewer Response
 
+    const headers = request.headers;
     const userAgent = getHeader(headers, "user-agent");
 
-    // Simple user counter record - only essential metadata
     const record = {
       timestamp: new Date().toISOString(),
       requestId: config.requestId,
       distributionId: config.distributionId,
-      uri: uri,
-      clientIp: clientIp,
+      uri: request.uri,
+      querystring: request.querystring || "",        // ← added
+      fullPath: request.uri + (request.querystring ? `?${request.querystring}` : ""),
+      clientIp: request.clientIp,
       userAgent: userAgent,
-      // Basic device type detection
+      // Improved device detection (order matters!)
       deviceType: (() => {
-        const ua = userAgent || "";
-        if (/mobile|android|iphone|ipad|ipod/i.test(ua)) return "mobile";
+        const ua = (userAgent || "").toLowerCase();
         if (/tablet|ipad/i.test(ua)) return "tablet";
+        if (/mobile|android|iphone|ipod/i.test(ua)) return "mobile";
         return "desktop";
       })(),
       country: getHeader(headers, "cloudfront-viewer-country"),
-      // Optional: add these if you want them in Datadog
       method: request.method,
-      referrer: getHeader(headers, "referer") || getHeader(headers, "referrer")
+      referrer: getHeader(headers, "referer") || getHeader(headers, "referrer"),
+      // Extra useful fields when using Viewer Response trigger
+      statusCode: response.statusCode,
+      statusDescription: response.statusDescription || "",
     };
 
-    // Fire and forget - send to Kinesis without waiting
+    // Fire-and-forget to Kinesis (no await, no blocking)
     kinesisClient.send(
       new PutRecordCommand({
         StreamName: STREAM_NAME,
-        PartitionKey: clientIp || uri,
+        PartitionKey: config.requestId,               // ← better distribution
         Data: Buffer.from(JSON.stringify(record)),
       })
     ).catch((err) => {
-      // Log error but don't block the response
-      console.error("Kinesis error:", err.message);
+      console.error("Kinesis PutRecord failed:", err.message);
+      // Do NOT re-throw — we never want to block the response
     });
 
-    // Tell Lambda not to wait for Kinesis
+    // Critical for async logging in Lambda@Edge
     context.callbackWaitsForEmptyEventLoop = false;
-    
-    // Immediately return the request to CloudFront
-    callback(null, request);
-    
+
+    // Return the response immediately (Viewer Response trigger)
+    callback(null, response);
+
   } catch (error) {
-    // If anything fails, still return the request
-    console.error('Lambda@Edge error:', error);
-    callback(null, event.Records[0].cf.request);
+    console.error("Lambda@Edge error:", error);
+    // Always return the original response so the user never sees an error
+    callback(null, event.Records[0].cf.response);
   }
 };
