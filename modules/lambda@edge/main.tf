@@ -44,7 +44,7 @@ resource "aws_lambda_function" "edge_metadata" {
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   publish          = true
 
-  timeout     = 5
+  timeout     = 120
   memory_size = 128
 
   description = "CloudFront edge metadata collector → Kinesis stream: ${var.kinesis_stream_name}"
