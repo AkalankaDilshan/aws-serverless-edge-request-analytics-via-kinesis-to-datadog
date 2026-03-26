@@ -2,143 +2,66 @@
 
 const { KinesisClient, PutRecordCommand } = require("@aws-sdk/client-kinesis");
 
-const STREAM_NAME   = "${kinesis_stream_name}";
+const STREAM_NAME = "${kinesis_stream_name}";
 const STREAM_REGION = "${kinesis_region}";
 
 const kinesisClient = new KinesisClient({ region: STREAM_REGION });
 
+// Simple helper to get header values
 function getHeader(headers, name) {
   const entry = headers[name.toLowerCase()];
   return entry && entry.length > 0 ? entry[0].value : null;
 }
 
-function extractGeo(headers) {
-  return {
-    country:     getHeader(headers, "cloudfront-viewer-country"),
-    countryName: getHeader(headers, "cloudfront-viewer-country-name"),
-    region:      getHeader(headers, "cloudfront-viewer-country-region"),
-    regionName:  getHeader(headers, "cloudfront-viewer-country-region-name"),
-    city:        getHeader(headers, "cloudfront-viewer-city"),
-    latitude:    getHeader(headers, "cloudfront-viewer-latitude"),
-    longitude:   getHeader(headers, "cloudfront-viewer-longitude"),
-    timezone:    getHeader(headers, "cloudfront-viewer-time-zone"),
-    postalCode:  getHeader(headers, "cloudfront-viewer-postal-code"),
-    metroCode:   getHeader(headers, "cloudfront-viewer-metro-code"),
-    isDesktop:   getHeader(headers, "cloudfront-is-desktop-viewer"),
-    isMobile:    getHeader(headers, "cloudfront-is-mobile-viewer"),
-    isTablet:    getHeader(headers, "cloudfront-is-tablet-viewer"),
-    isSmartTV:   getHeader(headers, "cloudfront-is-smarttv-viewer"),
-  };
-}
-
-function detectDevice(ua) {
-  if (!ua) return { type: "unknown", os: "unknown", browser: "unknown" };
-
-  const type =
-    /mobi|android|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(ua)
-      ? "mobile"
-      : /tablet|ipad/i.test(ua)
-      ? "tablet"
-      : "desktop";
-
-  const os =
-    /windows nt/i.test(ua)         ? "Windows"
-    : /mac os x/i.test(ua)         ? "macOS"
-    : /android/i.test(ua)          ? "Android"
-    : /iphone|ipad|ipod/i.test(ua) ? "iOS"
-    : /linux/i.test(ua)            ? "Linux"
-    : /cros/i.test(ua)             ? "ChromeOS"
-    : "Other";
-
-  const browser =
-    /edg\//i.test(ua)          ? "Edge"
-    : /opr\//i.test(ua)        ? "Opera"
-    : /chrome/i.test(ua)       ? "Chrome"
-    : /firefox/i.test(ua)      ? "Firefox"
-    : /safari/i.test(ua)       ? "Safari"
-    : /msie|trident/i.test(ua) ? "IE"
-    : "Other";
-
-  const versionMatch = ua.match(/(?:Chrome|Firefox|Safari|Edg|OPR)[\/ ]([\d.]+)/i);
-  const browserVersion = versionMatch ? versionMatch[1].split(".")[0] : null;
-
-  return { type, os, browser, browserVersion };
-}
-
-function parseAcceptLanguage(raw) {
-  if (!raw) return [];
-  return raw
-    .split(",")
-    .map((s) => s.trim().split(";")[0])
-    .filter(Boolean);
-}
-
-// Convert to callback style instead of async
 exports.handler = (event, context, callback) => {
   try {
-    const cfRecord  = event.Records[0].cf;
+    const cfRecord = event.Records[0].cf;
     const { request, config } = cfRecord;
-    const { headers, uri, method, querystring, clientIp } = request;
+    const { headers, uri, clientIp } = request;
 
     const userAgent = getHeader(headers, "user-agent");
-    const referrer  = getHeader(headers, "referer") || getHeader(headers, "referrer");
 
+    // Simple user counter record - only essential metadata
     const record = {
-      timestamp:       new Date().toISOString(),
-      requestId:       config.requestId,
-      distributionId:  config.distributionId,
-      eventType:       config.eventType,
-      method,
-      uri,
-      querystring:     querystring || null,
-      host:            getHeader(headers, "host"),
-      protocol:        getHeader(headers, "cloudfront-forwarded-proto"),
-      clientIp,
-      userAgent,
-      referrer,
-      acceptLanguages: parseAcceptLanguage(getHeader(headers, "accept-language")),
-      acceptEncoding:  getHeader(headers, "accept-encoding"),
-      geo:             extractGeo(headers),
-      device:          detectDevice(userAgent),
-      cacheControl:    getHeader(headers, "cache-control"),
-      pragma:          getHeader(headers, "pragma"),
+      timestamp: new Date().toISOString(),
+      requestId: config.requestId,
+      distributionId: config.distributionId,
+      uri: uri,
+      clientIp: clientIp,
+      userAgent: userAgent,
+      // Basic device type detection
+      deviceType: (() => {
+        const ua = userAgent || "";
+        if (/mobile|android|iphone|ipad|ipod/i.test(ua)) return "mobile";
+        if (/tablet|ipad/i.test(ua)) return "tablet";
+        return "desktop";
+      })(),
+      country: getHeader(headers, "cloudfront-viewer-country"),
+      // Optional: add these if you want them in Datadog
+      method: request.method,
+      referrer: getHeader(headers, "referer") || getHeader(headers, "referrer")
     };
 
-    // Fire and forget - don't await the Kinesis operation
-    // This ensures the Lambda returns quickly without waiting for Kinesis
-    const kinesisPromise = kinesisClient.send(
+    // Fire and forget - send to Kinesis without waiting
+    kinesisClient.send(
       new PutRecordCommand({
-        StreamName:   STREAM_NAME,
+        StreamName: STREAM_NAME,
         PartitionKey: clientIp || uri,
-        Data:         Buffer.from(JSON.stringify(record)),
+        Data: Buffer.from(JSON.stringify(record)),
       })
     ).catch((err) => {
       // Log error but don't block the response
-      console.error(JSON.stringify({
-        level:   "ERROR",
-        message: "Kinesis publish failed",
-        error:   err.message,
-        stream:  STREAM_NAME,
-        uri,
-      }));
+      console.error("Kinesis error:", err.message);
     });
 
-    // Set a timeout to prevent hanging if Kinesis is slow
-    // But we don't await it - we just let it run in background
-    setTimeout(() => {
-      // This is just a safety timeout - the Lambda might already have returned
-      // but Node.js will keep the event loop alive until all promises resolve
-      // unless we set context.callbackWaitsForEmptyEventLoop = false
-    }, 100);
-
-    // IMPORTANT: Tell Lambda not to wait for the Kinesis promise
+    // Tell Lambda not to wait for Kinesis
     context.callbackWaitsForEmptyEventLoop = false;
     
     // Immediately return the request to CloudFront
     callback(null, request);
     
   } catch (error) {
-    // If anything fails, still return the request to avoid 503
+    // If anything fails, still return the request
     console.error('Lambda@Edge error:', error);
     callback(null, event.Records[0].cf.request);
   }
