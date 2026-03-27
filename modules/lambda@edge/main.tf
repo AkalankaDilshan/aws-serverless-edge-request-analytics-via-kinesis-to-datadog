@@ -34,7 +34,6 @@ data "archive_file" "lambda_zip" {
 
   depends_on = [
     local_file.lambda_source,
-    null_resource.npm_install
   ]
 }
 
