@@ -13,18 +13,18 @@ resource "local_file" "lambda_source" {
   filename = local.rendered_source
 }
 
-resource "null_resource" "npm_install" {
-  triggers = {
-    package_lock = filemd5("${local.function_dir}/package-lock.json")
-    source_hash  = local_file.lambda_source.content_md5
-  }
+# resource "null_resource" "npm_install" {
+#   triggers = {
+#     package_lock = filemd5("${local.function_dir}/package-lock.json")
+#     source_hash  = local_file.lambda_source.content_md5
+#   }
 
-  provisioner "local-exec" {
-    command = "npm ci --prefix ${local.function_dir} --omit=dev --no-fund --no-audit"
-  }
+#   provisioner "local-exec" {
+#     command = "npm ci --prefix ${local.function_dir} --omit=dev --no-fund --no-audit"
+#   }
 
-  depends_on = [local_file.lambda_source]
-}
+#   depends_on = [local_file.lambda_source]
+# }
 
 data "archive_file" "lambda_zip" {
   type        = "zip"
