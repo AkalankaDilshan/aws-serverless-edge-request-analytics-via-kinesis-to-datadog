@@ -48,7 +48,7 @@ resource "aws_cloudfront_distribution" "cdn_distribution" {
     
     # Lambda@Edge: viewer-request 
     lambda_function_association {
-      event_type   = "viewer-response"
+      event_type   = "viewer-request"
       lambda_arn   = var.lambdaedge_function_arn
       include_body = false                       
     }
