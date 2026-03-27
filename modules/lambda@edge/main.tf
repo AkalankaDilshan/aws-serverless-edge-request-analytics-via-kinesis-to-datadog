@@ -1,38 +1,41 @@
 locals {
+  function_dir     = "${path.module}/function"
   rendered_source = "${path.module}/function/index.js"
   zip_output_path = "${path.module}/builds/lambda_edge.zip"
 }
 
 # Render index.js.tpl -> index.js 
 resource "local_file" "lambda_source" {
-  content = templatefile("${path.module}/function/index.js.tpl", {
+  content = templatefile("${local.function_dir}/index.js.tpl", {
     kinesis_stream_name = var.kinesis_stream_name
     kinesis_region      = var.kinesis_region
   })
   filename = local.rendered_source
 }
 
-# run npm install inside the function directory adter index.js rendered
-# resource "null_resource" "npm_install" {
-#   triggers = {
-#     package_json = filemd5("${path.module}/function/package.json")
-#     source_hash  = local_file.lambda_source.content_md5
-#   }
+resource "null_resource" "npm_install" {
+  triggers = {
+    package_lock = filemd5("${local.function_dir}/package-lock.json")
+    source_hash  = local_file.lambda_source.content_md5
+  }
 
-#   provisioner "local-exec" {
-#     command     = "npm install --prefix ${path.module}/function --omit=dev --no-fund --no-audit"
-#     working_dir = path.module
-#   }
+  provisioner "local-exec" {
+    command = "npm ci --prefix ${local.function_dir} --omit=dev --no-fund --no-audit"
+  }
 
-#   depends_on = [local_file.lambda_source]
-# }
+  depends_on = [local_file.lambda_source]
+}
 
 data "archive_file" "lambda_zip" {
   type        = "zip"
-  source_dir  = "${path.module}/function"
+  source_dir  = local.function_dir
   output_path = local.zip_output_path
-  excludes    = ["*.tpl"]
+  excludes = ["*.tpl", "*.bak", "builds"] # clean excludes
 
+  depends_on = [
+    local_file.lambda_source,
+    null_resource.npm_install
+  ]
 }
 
 resource "aws_lambda_function" "edge_metadata" {
@@ -53,4 +56,6 @@ resource "aws_lambda_function" "edge_metadata" {
     EventType     = "viewer-request"
     KinesisStream = var.kinesis_stream_name
   })
+
+  depends_on = [data.archive_file.lambda_zip]
 }
