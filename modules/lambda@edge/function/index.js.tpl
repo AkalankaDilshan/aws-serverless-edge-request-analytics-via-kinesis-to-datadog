@@ -17,7 +17,7 @@ exports.handler = async(event) => {
             new PutRecordCommand({
                 StreamName: STREAM_NAME,
                 PartitionKey: clientIp || uri,
-                Data: Buffer.from(JSON.stringify(record)),
+                Data: Buffer.from(JSON.stringify(request)),
             })
         );
     } catch(err) {
