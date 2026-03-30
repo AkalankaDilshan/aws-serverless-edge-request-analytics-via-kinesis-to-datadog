@@ -61,7 +61,8 @@ variable "domain_name" {
 variable "datadog_url" {
   description = "correct region dd url"
   type        = string
-  default     = "https://aws-kinesis-http-intake.logs.us5.datadoghq.com/api/v2/logs?dd-protocol=aws-kinesis-firehose"
+  #default     = "https://aws-kinesis-http-intake.logs.us5.datadoghq.com/api/v2/logs?dd-protocol=aws-kinesis-firehose"
+  default = "https://aws-kinesis-http-intake.logs.datadoghq.com/v1/input"
 }
 
 variable "datadog_api_key" {
