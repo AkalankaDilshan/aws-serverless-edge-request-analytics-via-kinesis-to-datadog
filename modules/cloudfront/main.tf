@@ -44,7 +44,8 @@ resource "aws_cloudfront_distribution" "cdn_distribution" {
     compress               = true
 
     cache_policy_id          = local.caching_disabled_policy_id
-    origin_request_policy_id = data.aws_cloudfront_origin_request_policy.all_viewer_and_cf_headers.id
+    origin_request_policy_id = "33f36d7e-f396-46d9-90e0-52428a34d9dc"
+    #origin_request_policy_id = data.aws_cloudfront_origin_request_policy.all_viewer_and_cf_headers.id
     
     # Lambda@Edge: viewer-request 
     lambda_function_association {
