@@ -60,12 +60,8 @@ modules/
  This project is licensed under the [MIT License](./LICENSE).
 
 ---
-
----
 ## Contributions
  Contributions are welcome! Please submit a pull request or raise an issue for suggestions. 
- 
----
 
 ---
 ## Connect with Me
@@ -73,4 +69,3 @@ For any queries, feel free to reach out via LinkedIn or open an issue in the rep
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?style=flat&logo=linkedin)](www.linkedin.com/in/akalanka007)
 
----
