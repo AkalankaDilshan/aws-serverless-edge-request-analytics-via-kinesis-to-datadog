@@ -8,20 +8,8 @@
 ![Datadog](https://img.shields.io/badge/Monitoring-Datadog-632CA6?style=flat&logo=datadog&logoColor=white)
 ![IaC](https://img.shields.io/badge/IaC-100%25%20Terraform-7B42BC?style=flat&logo=terraform)
 
----
+<img width="922" height="582" alt="Screenshot 2026-03-31 at 13 32 38" src="https://github.com/user-attachments/assets/6ff958e2-51d9-42de-92a4-c766f692176b" />
 
-## 🗺️ Architecture
-
-```
-Browser → Route 53 → CloudFront → Lambda@Edge ──► Kinesis Stream ──► Kinesis Firehose ──► Datadog
-                          │            │                                       │
-                     CF Access      (async,                                    └──► S3 Data Lake
-                       Logs       no latency)                                         │
-                          │                                                    Glacier Deep Archive
-                          └──────────────────────────────────► VPC → EC2 (Nginx Origin)
-```
-
----
 
 ## ✨ What It Does
 
