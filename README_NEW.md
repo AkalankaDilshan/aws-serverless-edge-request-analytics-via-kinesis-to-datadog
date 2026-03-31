@@ -9,7 +9,7 @@
 ![IaC](https://img.shields.io/badge/IaC-100%25%20Terraform-7B42BC?style=flat&logo=terraform)
 
  
-📖 **[View Full Documentation →](./README-DETAILED.md)**
+📖 **[View Full Documentation →](./DETAILED_README.md)**
 
 <img width="922" height="582" alt="Screenshot 2026-03-31 at 13 32 38" src="https://github.com/user-attachments/assets/6ff958e2-51d9-42de-92a4-c766f692176b" />
 
