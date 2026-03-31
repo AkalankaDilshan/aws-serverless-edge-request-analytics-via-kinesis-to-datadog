@@ -52,7 +52,16 @@ modules/
  ├── kinesis_firehose/    ← Datadog HTTP + S3 backup destination
  └── s3/data_lake_s3/     ← Glacier lifecycle policy
 ```
+## License
+This project is licensed under the [MIT License](./LICENSE).
 
+## Contributions
+Contributions are welcome! Please submit a pull request or raise an issue for suggestions.
+
+## Connect with Me
+For any queries, feel free to reach out via LinkedIn or open an issue in the repository.
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?style=flat&logo=linkedin)](www.linkedin.com/in/akalanka007)
 ---
 
 📖 **[View Full Documentation →](./README-DETAILED.md)**
