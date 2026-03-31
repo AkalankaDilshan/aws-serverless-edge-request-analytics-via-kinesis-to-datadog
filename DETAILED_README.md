@@ -6,8 +6,7 @@
 > All infrastructure is managed by Terraform Cloud and deployed via GitHub Actions CI/CD.
 
 ---
-
-![Architecture Diagram](./docs/architecture.png)
+<img width="922" height="582" alt="Screenshot 2026-03-31 at 13 32 38" src="https://github.com/user-attachments/assets/7c657388-422d-4d5b-9070-a5eaf90c653b" />
 
 ---
 
@@ -46,43 +45,6 @@ This project deploys a **fully serverless edge analytics pipeline** on AWS. Ever
 - 🏊 **Data Lake archival** — All raw logs land in S3, auto-tiered to Glacier Deep Archive
 - 🔒 **Secure by design** — KMS encryption at rest, least-privilege IAM, no public S3 buckets
 - 🚀 **Fully automated** — Terraform Cloud + GitHub Actions handle all infrastructure changes
-
----
-
-## 🏗️ Architecture
-
-```
-                        ┌──────────────────────────────────────────────────────┐
-                        │              ANALYTICS PIPELINE                       │
-  ┌──────────────┐      │  ┌─────────────┐   ┌──────────┐   ┌───────────────┐ │
-  │ Lambda@Edge  │─────▶│  │  Kinesis    │──▶│ Kinesis  │──▶│   Datadog     │ │
-  │  IAM Role    │      │  │ Data Stream │   │ Firehose │   │  (Real-time)  │ │
-  └──────┬───────┘      │  └─────────────┘   └────┬─────┘   └───────────────┘ │
-         │              │                         │                             │
-         ▼              │                         ▼                             │
-  ┌──────────────┐      │                  ┌─────────────┐   ┌───────────────┐ │
-  │ Lambda@Edge  │      │                  │  S3 Data    │──▶│  S3 Glacier   │ │
-  │  Function    │      │                  │    Lake     │   │ Deep Archive  │ │
-  └──────┬───────┘      └──────────────────└─────────────┘───────────────────┘ │
-         │ Viewer Request                                                        
-         ▼                                                                       
-  ┌──────────────┐      ┌─────────────────────────────────────────────────────┐
-  │  CloudFront  │─────▶│                     VPC                              │
-  │  + CF Logs   │      │  ┌────────────────────────────────────────────────┐ │
-  └──────┬───────┘      │  │  Public Subnet                                  │ │
-         │              │  │  ┌──────────────┐                               │ │
-         │              │  │  │ Security     │                               │ │
-         │              │  │  │   Group      │                               │ │
-  ┌──────┴───────┐      │  │  │  ┌────────┐ │                               │ │
-  │   Route 53   │      │  │  │  │  EC2   │ │                               │ │
-  │    + ACM     │      │  │  │  │ Server │ │                               │ │
-  └──────────────┘      │  │  │  └────────┘ │                               │ │
-                        │  │  └──────────────┘                               │ │
-  ┌──────────────┐      │  └────────────────────────────────────────────────┘ │
-  │   Devices    │      └─────────────────────────────────────────────────────┘
-  │  (Browsers)  │
-  └──────────────┘
-```
 
 ---
 
