@@ -8,6 +8,9 @@
 ![Datadog](https://img.shields.io/badge/Monitoring-Datadog-632CA6?style=flat&logo=datadog&logoColor=white)
 ![IaC](https://img.shields.io/badge/IaC-100%25%20Terraform-7B42BC?style=flat&logo=terraform)
 
+ 
+📖 **[View Full Documentation →](./README-DETAILED.md)**
+
 <img width="922" height="582" alt="Screenshot 2026-03-31 at 13 32 38" src="https://github.com/user-attachments/assets/6ff958e2-51d9-42de-92a4-c766f692176b" />
 
 
@@ -67,11 +70,3 @@ For any queries, feel free to reach out via LinkedIn or open an issue in the rep
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?style=flat&logo=linkedin)](www.linkedin.com/in/akalanka007)
 ---
-
-
-
-
-
-<div align="center">
-  📖 **[View Full Documentation →](./DETAILED_README.md)**
-</div>
