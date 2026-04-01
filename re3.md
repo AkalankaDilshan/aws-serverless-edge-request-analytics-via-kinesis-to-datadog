@@ -65,7 +65,7 @@ Once deployed, edge metadata flows into Datadog in real time. Below are live log
 
 > **Datadog Log Explorer** — each record contains geo, device, URI, referrer, status code and more, arriving within seconds of the viewer request.
 
-<table>
+<table border="0" cellspacing="0" cellpadding="0">
 <tr>
 <td width="60%">
 <img src="https://github.com/user-attachments/assets/732faedf-d9e4-4856-b14b-af3e0dc8de71"/>
