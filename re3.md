@@ -98,9 +98,7 @@ Once deployed, edge metadata flows into Datadog in real time. Below are live log
 
 <!-- Replace src below with your actual AWS bill screenshot uploaded via GitHub Issues -->
 <div align="center">
-  <img src="./docs/screenshots/aws-bill.png" alt="$60 AWS Bill" width="680"/>
-  <br/>
-  <sub>💸 Real AWS bill from leaving this stack idle during testing — yes, really $60</sub>
+  <img width="1117" height="682" alt="Screenshot 2026-04-01 at 09 34 54" src="https://github.com/user-attachments/assets/844cae8f-b6f3-4a0a-afc7-1e1530104c0d" />
 </div>
 
 <br/>
