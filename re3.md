@@ -4,7 +4,7 @@
 ![AWS](https://img.shields.io/badge/AWS-CloudFront%20%7C%20Lambda%40Edge%20%7C%20Kinesis%20%7C%20EC2-FF9900?style=flat&logo=amazonaws&logoColor=white)
 ![Terraform](https://img.shields.io/badge/Terraform-Cloud-7B42BC?style=flat&logo=terraform&logoColor=white)
 ![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?style=flat&logo=githubactions&logoColor=green)
-![Datadog](https://img.shields.io/badge/Monitoring-Datadog-632CA6?style=flat&logo=datadog&logoColor=white)
+![Datadog](https://img.shields.io/badge/Monitoring-Datadog-632CA6?style=flat&logo=datadog&logoColor=black)
 ![IaC](https://img.shields.io/badge/IaC-100%25%20Terraform-7B42BC?style=flat&logo=terraform)
 
 📖 **[View Full Documentation →](./DETAILED_README.md)**
