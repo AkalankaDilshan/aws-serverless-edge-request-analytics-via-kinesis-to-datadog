@@ -1,11 +1,12 @@
-# ⚡ AWS Edge Request Analytics Pipeline
-> Real-time request analytics at the CloudFront edge — zero latency impact, streamed to Datadog, archived to S3 Glacier.
+# 🌍 AWS Edge Request Analytics Pipeline
+> Capture rich request metadata at the CloudFront edge — geo, device, referrer, and more —
+> stream it asynchronously through Kinesis to Datadog for real-time dashboards,
+> and archive it to an S3 Data Lake with automatic Glacier tiering.
+> All infrastructure is managed by Terraform Cloud and deployed via GitHub Actions CI/CD.
 
-![AWS](https://img.shields.io/badge/AWS-CloudFront%20%7C%20Lambda%40Edge%20%7C%20Kinesis%20%7C%20EC2-FF9900?style=flat&logo=amazonaws&logoColor=white)
 ![Terraform](https://img.shields.io/badge/Terraform-Cloud-7B42BC?style=flat&logo=terraform&logoColor=white)
 ![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?style=flat&logo=githubactions&logoColor=green)
 ![Datadog](https://img.shields.io/badge/Monitoring-Datadog-632CA6?style=flat&logo=datadog&logoColor=black)
-![IaC](https://img.shields.io/badge/IaC-100%25%20Terraform-7B42BC?style=flat&logo=terraform)
 
 📖 **[View Full Documentation →](./DETAILED_README.md)**
 
