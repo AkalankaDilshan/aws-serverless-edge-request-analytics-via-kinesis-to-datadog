@@ -73,10 +73,10 @@ Once deployed, edge metadata flows into Datadog in real time. Below are live log
   4. Copy those URLs and replace the src values below
   5. Close the issue without saving
 -->
+<img width="1421" height="808" alt="Screenshot 2026-03-31 at 12 05 02" src="https://github.com/user-attachments/assets/732faedf-d9e4-4856-b14b-af3e0dc8de71" />
+<img width="797" height="804" alt="Screenshot 2026-03-31 at 12 05 14" src="https://github.com/user-attachments/assets/dbc17abb-dd0e-4414-99f0-030c8cf759a4" />
 
-| Datadog Live Logs | Log Record Detail |
-|---|---|
-| ![Datadog Logs](./docs/screenshots/datadog-logs.png) | ![Datadog Record](./docs/screenshots/datadog-record.png) |
+
 
 ---
 
