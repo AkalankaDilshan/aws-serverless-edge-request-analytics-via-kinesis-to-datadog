@@ -68,7 +68,7 @@ Once deployed, edge metadata flows into Datadog in real time. Below are live log
 <table border="0" cellspacing="0" cellpadding="0">
 <tr>
 <td width="60%">
-<img src="https://github.com/user-attachments/assets/732faedf-d9e4-4856-b14b-af3e0dc8de71"/>
+<img width="1410" height="808" alt="add" src="https://github.com/user-attachments/assets/e4a335e5-dcf8-4b89-8baf-43ae040bcae4" />
 </td>
 <td width="40%">
 <img src="https://github.com/user-attachments/assets/dbc17abb-dd0e-4414-99f0-030c8cf759a4"/>
