@@ -65,16 +65,16 @@ Once deployed, edge metadata flows into Datadog in real time. Below are live log
 
 > **Datadog Log Explorer** — each record contains geo, device, URI, referrer, status code and more, arriving within seconds of the viewer request.
 
-<!-- 
-  HOW TO ADD YOUR SCREENSHOTS:
-  1. Go to your GitHub repo → Issues → New Issue
-  2. Drag and drop your Datadog screenshots into the comment box
-  3. GitHub generates a URL like: https://github.com/user-attachments/assets/xxx
-  4. Copy those URLs and replace the src values below
-  5. Close the issue without saving
--->
-<img width="1421" height="808" alt="Screenshot 2026-03-31 at 12 05 02" src="https://github.com/user-attachments/assets/732faedf-d9e4-4856-b14b-af3e0dc8de71" />
-<img width="797" height="804" alt="Screenshot 2026-03-31 at 12 05 14" src="https://github.com/user-attachments/assets/dbc17abb-dd0e-4414-99f0-030c8cf759a4" />
+<table>
+<tr>
+<td width="60%">
+<img src="https://github.com/user-attachments/assets/732faedf-d9e4-4856-b14b-af3e0dc8de71"/>
+</td>
+<td width="40%">
+<img src="https://github.com/user-attachments/assets/dbc17abb-dd0e-4414-99f0-030c8cf759a4"/>
+</td>
+</tr>
+</table>
 
 
 
